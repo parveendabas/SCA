@@ -53,7 +53,7 @@ Perform_CCA <- function(Sampleall.object, NameInpdf, saveDIR, FeatureUseCount=25
   if (plots == TRUE) {
     print("Generating quality plots")
     pdf(file=paste0("Plots_CCA_",Sample,".pdf"),height = 10,width = 12)
-    print(ElbowPlot(sample.integrated, ndims = CCAdimchosen)) + ggtitle(paste("PCs ",CCAdimchosen))
+    print(ElbowPlot(sample.integrated, ndims = CCAdimchosen) + ggtitle(paste("PCs ",CCAdimchosen)))
     p1 <- DimPlot(sample.integrated, reduction = "umap", group.by = GroupName)
     p2 <- DimPlot(sample.integrated, reduction = "umap", group.by = "seurat_clusters")
     print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
