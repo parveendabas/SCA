@@ -16,7 +16,7 @@
 
 
 
-Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, FeatureUseCount=2500){
+Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, FeatureUseCount=2500, plots = TRUE, save = TRUE){
   
   print(paste0("Processing Sample:",Sample))
   print("Reading 10X Dir:")
@@ -47,16 +47,16 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
   print("Normalizing Data")
   print("Normalizing Method: LogNormalize: Feature counts for each cell are divided by the total counts for that cell and multiplied by the scale.factor. This is then natural-log transformed using log1p.")
   SCdata <- NormalizeData(SCdata)
-  SCdata <- FindVariableFeatures(object = SCdata, selection.method = "vst", nfeatures = FeatureUseInCCA, verbose = FALSE)
+  SCdata <- FindVariableFeatures(object = SCdata, selection.method = "vst", nfeatures = FeatureUseCount, verbose = FALSE)
   
   if (plots == TRUE) {
   print("Generating quality plots")
-  setwd(saveDIR)
-  pdf(file=paste0("QC_",Sample,".pdf"),height = 11,width = 20)
-  Create_Table(SCdata)
-  print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 2)) 
-  dev.off()
-  }
+    setwd(saveDIR)
+    pdf(file=paste0("QC_",Sample,".pdf"),height = 8,width = 10)
+    Create_Table(SCdata)
+    print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
+    dev.off()
+    }
   
   if (save == TRUE) {
   print("Saving Seurat RDS object and meta data")
