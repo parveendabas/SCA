@@ -9,7 +9,9 @@
 #' @param mtpercent Include cells reporting at most this much mitochondrial transcript percentage.
 #' @param rbpercent Include cells reporting at most this much ribosomal transcript percentage.
 #' @param FeatureUseCount Number of features to select as top variable features; only used when selection.method is set to 'dispersion' or 'vst'
-#' @keywords matrix.DIR, saveDIR, Sample, mincells, mingenes, mtpercent, rbpercent, FeatureUseCount
+#' @param plots Save QC plots
+#' @param save Save RDS Seurat object
+#' @keywords matrix.DIR, saveDIR, Sample, mincells, mingenes, mtpercent, rbpercent, FeatureUseCount, plots, save
 #' @export
 #' @examples
 #' Read10X_Norm_Mouse()

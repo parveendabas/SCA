@@ -33,6 +33,10 @@ Read10X_Norm_Mouse(
 \item{rbpercent}{Include cells reporting at most this much ribosomal transcript percentage.}
 
 \item{FeatureUseCount}{Number of features to select as top variable features; only used when selection.method is set to 'dispersion' or 'vst'}
+
+\item{plots}{Save QC plots}
+
+\item{save}{Save RDS Seurat object}
 }
 \description{
 This function allows you to express your love of cats.
@@ -40,11 +44,13 @@ This function allows you to express your love of cats.
 \examples{
 Read10X_Norm_Mouse()
 }
-\keyword{FeatureUseCount}
+\keyword{FeatureUseCount,}
 \keyword{Sample,}
 \keyword{matrix.DIR,}
 \keyword{mincells,}
 \keyword{mingenes,}
 \keyword{mtpercent,}
+\keyword{plots,}
 \keyword{rbpercent,}
+\keyword{save}
 \keyword{saveDIR,}
