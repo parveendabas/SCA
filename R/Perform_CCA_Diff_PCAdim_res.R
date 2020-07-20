@@ -20,7 +20,7 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   print(paste0("Performing CCA for ",length(TempAll.object)," Objects"))
   
   pdf(file=paste0("Plots_CCA_",Sample,"_Different_PCs_and_Resolutions.pdf"),height = 16,width = 18)
-  print(ElbowPlot(sample.integrated, ndims = TempCCAdimchosen) + ggtitle(paste((unlist(TempCCAdimchosenlist)), collapse=",")))
+  print(ElbowPlot(sample.integrated, ndims = 30) + ggtitle(paste((unlist(TempCCAdimchosenlist)), collapse=",")))
   
   for(TempCCAdimchosen in TempCCAdimchosenlist){
   #TempCCAdimchosen=20
@@ -78,7 +78,6 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   blank <- ggplot() + theme_bw() + ggtitle(paste0("PCs ",TempCCAdimchosen)) + theme(plot.title = element_text(size=50, colour = "red"))
   print(plot_grid(p[["0.1"]], p[["0.2"]], p[["0.3"]], p[["0.5"]], p[["0.8"]], blank, ncol = 3, labels=c("0.1", "0.2", "0.3", "0.5", "0.8")))
   
-  dev.off()
   
   if (save == TRUE) {
     print("Saving Seurat RDS object and meta data")
@@ -88,6 +87,8 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   }
   
   }
+  
+  dev.off()
   
   print("Done")
   print(Sys.time())
