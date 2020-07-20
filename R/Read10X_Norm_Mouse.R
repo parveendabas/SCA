@@ -2,23 +2,26 @@
 #'
 #' This function allows you to express your love of cats.
 #' @param matrix.DIR Path to 10X directory.
+#' @param saveDIR Path to save Quality plots and RDS data.
+#' @param Sample Sample Name.
 #' @param mincells Include features detected in at least this many cells. Will subset the counts matrix as well. To reintroduce excluded features, create a new object with a lower cutoff.
 #' @param mingenes Include cells where at least this many features are detected.
 #' @param mtpercent Include cells reporting at most this much mitochondrial transcript percentage.
 #' @param rbpercent Include cells reporting at most this much ribosomal transcript percentage.
-#' @param Sample Sample Name.
-#' @keywords matrix.DIR, mincells, mingenes, mtpercent, rbpercent, Sample
+#' @param FeatureUseCount Number of features to select as top variable features; only used when selection.method is set to 'dispersion' or 'vst'
+#' @keywords matrix.DIR, saveDIR, Sample, mincells, mingenes, mtpercent, rbpercent, FeatureUseCount
 #' @export
 #' @examples
 #' Read10X_Norm_Mouse()
 
 
 
-Read10X_Norm_Mouse <- function(matrix.DIR, Sample, mincells=3, mingenes=500, mtpercent=20, rbpercent=50){
+Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, FeatureUseCount=2500){
   
   print(paste0("Processing Sample:",Sample))
   print("Reading 10X Dir:")
   print(matrix.DIR)
+  print(saveDIR)
   data <- Read10X(data.dir = matrix.DIR)
   ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
   
@@ -35,7 +38,7 @@ Read10X_Norm_Mouse <- function(matrix.DIR, Sample, mincells=3, mingenes=500, mtp
   SCdata[["percent.mt"]] <- PercentageFeatureSet(SCdata, pattern = "^mt-")
   rb.genes <- rownames(SCdata@assays$RNA@counts)[rownames(SCdata@assays$RNA@counts) %like% "^Rp[sl]"]; rb.genes; length(rb.genes)
   SCdata[["percent.rb"]] <- PercentageFeatureSet(SCdata, pattern = "^Rp[sl]")
-  print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 2))  
+  #print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 2))  
   
   print("Filtering Data based on specified filters")
   print(paste0("mtpercent:",mtpercent, ", rbpercent:",rbpercent))
@@ -44,6 +47,23 @@ Read10X_Norm_Mouse <- function(matrix.DIR, Sample, mincells=3, mingenes=500, mtp
   print("Normalizing Data")
   print("Normalizing Method: LogNormalize: Feature counts for each cell are divided by the total counts for that cell and multiplied by the scale.factor. This is then natural-log transformed using log1p.")
   SCdata <- NormalizeData(SCdata)
+  SCdata <- FindVariableFeatures(object = SCdata, selection.method = "vst", nfeatures = FeatureUseInCCA, verbose = FALSE)
+  
+  if (plots == TRUE) {
+  print("Generating quality plots")
+  setwd(saveDIR)
+  pdf(file=paste0("QC_",Sample,".pdf"),height = 11,width = 20)
+  Create_Table(SCdata)
+  print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 2)) 
+  dev.off()
+  }
+  
+  if (save == TRUE) {
+  print("Saving Seurat RDS object and meta data")
+  setwd(saveDIR)
+  write.table(SCdata@meta.data,file=paste0("Meta_Data_",Sample,".txt"),quote=F,sep="\t")
+  saveRDS(SCdata, file = paste0(Sample,".rds"))
+  }
   
   return(SCdata)
   

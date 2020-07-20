@@ -6,15 +6,19 @@
 \usage{
 Read10X_Norm_Mouse(
   matrix.DIR,
+  saveDIR,
   Sample,
   mincells = 3,
   mingenes = 500,
   mtpercent = 20,
-  rbpercent = 50
+  rbpercent = 50,
+  FeatureUseCount = 2500
 )
 }
 \arguments{
 \item{matrix.DIR}{Path to 10X directory.}
+
+\item{saveDIR}{Path to save Quality plots and RDS data.}
 
 \item{Sample}{Sample Name.}
 
@@ -25,6 +29,8 @@ Read10X_Norm_Mouse(
 \item{mtpercent}{Include cells reporting at most this much mitochondrial transcript percentage.}
 
 \item{rbpercent}{Include cells reporting at most this much ribosomal transcript percentage.}
+
+\item{FeatureUseCount}{Number of features to select as top variable features; only used when selection.method is set to 'dispersion' or 'vst'}
 }
 \description{
 This function allows you to express your love of cats.
@@ -32,9 +38,11 @@ This function allows you to express your love of cats.
 \examples{
 Read10X_Norm_Mouse()
 }
-\keyword{Sample}
+\keyword{FeatureUseCount}
+\keyword{Sample,}
 \keyword{matrix.DIR,}
 \keyword{mincells,}
 \keyword{mingenes,}
 \keyword{mtpercent,}
 \keyword{rbpercent,}
+\keyword{saveDIR,}
