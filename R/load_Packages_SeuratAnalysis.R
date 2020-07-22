@@ -28,7 +28,6 @@ load_Packages_SeuratAnalysis <- function(){
   library(pheatmap)
   library(RColorBrewer)
   library(tidyverse)
-  #library(DESeq2)
   library(colorspace)
   library(splines)
   library(AnnotationDbi)
@@ -37,6 +36,7 @@ load_Packages_SeuratAnalysis <- function(){
   library(ggrepel)
   library(calibrate)
   library(futile.matrix)
+  library(ggplotify)
   
 }
 

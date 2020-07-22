@@ -19,8 +19,8 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   TempAll.object=Sampleall.object
   print(paste0("Performing CCA for ",length(TempAll.object)," Objects"))
   
-  pdf(file=paste0("Plots_CCA_",Sample,"_Different_PCs_and_Resolutions.pdf"),height = 16,width = 18)
-  print(ElbowPlot(sample.integrated, ndims = 30) + ggtitle(paste((unlist(TempCCAdimchosenlist)), collapse=",")))
+  pdf(file=paste0("Plots_CCA_",NameInpdf,"_Different_PCs_and_Resolutions.pdf"),height = 12,width = 16)
+  print(ElbowPlot(temp.integrated, ndims = 30) + ggtitle(paste((unlist(TempCCAdimchosenlist)), collapse=",")))
   
   for(TempCCAdimchosen in TempCCAdimchosenlist){
   #TempCCAdimchosen=20
@@ -33,22 +33,22 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   ## We then pass these anchors to the IntegrateData function, which returns a Seurat object.
   ## The returned object will contain a new Assay, which holds an integrated (or ‘batch-corrected’) expression matrix for all cells, enabling them to be jointly analyzed.
   print(paste0("Integrating Data"))
-  sample.integrated <- IntegrateData(anchorset = sample.anchors, dims = 1:TempCCAdimchosen)
+  temp.integrated <- IntegrateData(anchorset = sample.anchors, dims = 1:TempCCAdimchosen)
   ##After running IntegrateData, the Seurat object will contain a new Assay with the integrated expression matrix. Note that the original (uncorrected values) 
   ## are still stored in the object in the “RNA” assay, so you can switch back and forth.
   
-  #saveRDS(object = sample.integrated, file = paste0(NameInpdf,".rds"))
+  #saveRDS(object = temp.integrated, file = paste0(NameInpdf,".rds"))
   
   ## We can then use this new integrated matrix for downstream analysis and visualization. Here we scale the integrated data, run PCA, and visualize the results with UMAP. 
   ## The integrated datasets cluster by cell type, instead of by technology.
   # switch to integrated assay. The variable features of this assay are automatically set during
   # IntegrateData
-  DefaultAssay(object = sample.integrated) <- "integrated"
+  DefaultAssay(object = temp.integrated) <- "integrated"
   
   # Run the standard workflow for visualization and clustering
-  sample.integrated <- ScaleData(object = sample.integrated, verbose = FALSE)
-  sample.integrated <- RunPCA(object = sample.integrated, npcs = TempCCAdimchosen, verbose = FALSE)
-  sample.integrated <- RunUMAP(object = sample.integrated, reduction = "pca", dims = 1:TempCCAdimchosen)
+  temp.integrated <- ScaleData(object = temp.integrated, verbose = FALSE)
+  temp.integrated <- RunPCA(object = temp.integrated, npcs = TempCCAdimchosen, verbose = FALSE)
+  temp.integrated <- RunUMAP(object = temp.integrated, reduction = "pca", dims = 1:TempCCAdimchosen)
   
   setwd(saveDIR)
   p=q=list()
@@ -59,15 +59,15 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   #Tempres="0.1"
     
   print(paste0("Processing for Temp resolution ",Tempres))
-  sample.integrated <- FindNeighbors(sample.integrated, dims = 1:TempCCAdimchosen)
-  sample.integrated <- FindClusters(sample.integrated, resolution = as.numeric(Tempres))
+  temp.integrated <- FindNeighbors(temp.integrated, dims = 1:TempCCAdimchosen)
+  temp.integrated <- FindClusters(temp.integrated, resolution = as.numeric(Tempres))
   
   
   if (plots == TRUE) {
   print(paste0("Generating different resolution plots for PCA ",TempCCAdimchosen))
     
-  p[[Tempres]]  <- DimPlot(sample.integrated, reduction = "umap", group.by = "seurat_clusters")
-  q[[Tempres]]  <- DimPlot(sample.integrated, reduction = "umap", group.by = GroupName)
+  p[[Tempres]]  <- DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters")
+  q[[Tempres]]  <- DimPlot(temp.integrated, reduction = "umap", group.by = GroupName)
   #print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
   }
   
@@ -82,8 +82,8 @@ Perform_CCA_Diff_PCAdim_res <- function(Sampleall.object, NameInpdf, saveDIR, Te
   if (save == TRUE) {
     print("Saving Seurat RDS object and meta data")
     setwd(saveDIR)
-    write.table(sample.integrated@meta.data,file=paste0("Meta_Data_",NameInpdf,".txt"),quote=F,sep="\t")
-    saveRDS(object = sample.integrated, file = paste0(NameInpdf,"_PCA",TempCCAdimchosen,".rds"))
+    write.table(temp.integrated@meta.data,file=paste0("Meta_Data_",NameInpdf,".txt"),quote=F,sep="\t")
+    saveRDS(object = temp.integrated, file = paste0(NameInpdf,"_PCA",TempCCAdimchosen,".rds"))
   }
   
   }
