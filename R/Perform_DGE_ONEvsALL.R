@@ -1,7 +1,7 @@
 #' A Perform_DGE_ONEvsALL Function
 #'
 #' This function allows you to express your love of cats.
-#' @param Seurat.object A list of Seurat objects between which to find anchors for downstream integration.
+#' @param Temp.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param saveDIR Path to save generated data.
 #' @param GroupColOrder Factor order for Sample group column name
@@ -16,19 +16,19 @@
 #' @param downsampleHeatmap Max #cells to be plotted per identity
 #' @param plots Save CCA plots
 #' @param save Save integrated CCA RDS Seurat object
-#' @keywords Seurat.object, SuffixName="ALLcells", saveDIR, GroupColOrder , GroupColPalette, GroupCol, ToUseCol=, ToUseOrder, ToUsePallete, FDR, FCcutoff, topnumber, downsampleHeatmap, plots, save
+#' @keywords Temp.object, SuffixName="ALLcells", saveDIR, GroupColOrder , GroupColPalette, GroupCol, ToUseCol=, ToUseOrder, ToUsePallete, FDR, FCcutoff, topnumber, downsampleHeatmap, plots, save
 #' @export
 #' @examples
 #' Perform_DGE_ONEvsALL()
 
 
 
-Perform_DGE_ONEvsALL <- function(Seurat.object, saveDIR, GroupColOrder,
+Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder,
                                  SuffixName="ALLcells", GroupColPalette=cbPalette.Group.Dark, GroupCol="orig.ident",
                                  ToUseCol="seurat_clusters", ToUseOrder=ClusOrder, ToUsePallete=ClusPallette,
                                  FDR = 0.1, FCcutoff = 1.5, topnumber = 5, downsampleHeatmap = 300, plots = TRUE, save = TRUE){
   
-  Temp.object <- Seurat.object
+  #Temp.object <- Seurat.object
   DgeNameInpdf <- paste0(ToUseCol,"_Based_",SuffixName); DgeNameInpdf
   
   setwd(saveDIR)
@@ -109,9 +109,23 @@ Perform_DGE_ONEvsALL <- function(Seurat.object, saveDIR, GroupColOrder,
   }
   
   
+  RUNVlnPlot="YES"
+  if(RUNVlnPlot=="YES"){
+    pdf(file=paste0("QC_Violin_Plots_",DgeNameInpdf,".pdf"),height = 10,width = 14)
+    
+    Idents(Temp.object) <- ToUseCol
+    print(VlnPlot(Temp.object, features = c("nFeature_RNA", "percent.mt", "percent.rb"), cols = ToUsePallete, pt.size = 0.00, ncol = 1))
+    
+    Idents(Temp.object) <- GroupCol
+    print(VlnPlot(Temp.object, features = c("nFeature_RNA", "percent.mt", "percent.rb"), cols = GroupColPalette, pt.size = 0.00, ncol = 1))
+    
+    dev.off()
+  }
+  
+  
   RUNumapPlot="YES"
   if(RUNumapPlot=="YES"){
-    pdf(file=paste0("UMAP_Plots_Correct_Color_",DgeNameInpdf,".pdf"),height = 10,width = 14)
+    pdf(file=paste0("UMAP_Plots_",DgeNameInpdf,".pdf"),height = 10,width = 14)
     
     Idents(Temp.object) <- GroupCol
     Idents(Temp.object) <- factor(Idents(Temp.object), levels = GroupColOrder)

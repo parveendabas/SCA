@@ -5,7 +5,7 @@
 \title{A Perform_CCA Function}
 \usage{
 Perform_CCA(
-  Sampleall.object,
+  TempAll.object,
   NameInpdf,
   saveDIR,
   FeatureUseCount = 2500,
@@ -16,7 +16,7 @@ Perform_CCA(
 )
 }
 \arguments{
-\item{Sampleall.object}{A list of Seurat objects between which to find anchors for downstream integration.}
+\item{TempAll.object}{A list of Seurat objects between which to find anchors for downstream integration.}
 
 \item{NameInpdf}{Path to save Quality plots and RDS data.}
 
@@ -41,7 +41,7 @@ Perform_CCA()
 \keyword{CCAdimchosen,}
 \keyword{FeatureUseCount,}
 \keyword{NameInpdf,}
-\keyword{Sampleall.object,}
+\keyword{TempAll.object,}
 \keyword{plots,}
 \keyword{res,}
 \keyword{save}

@@ -1,7 +1,7 @@
 #' A Perform_CCA Function
 #'
 #' This function allows you to express your love of cats.
-#' @param Sampleall.object A list of Seurat objects between which to find anchors for downstream integration.
+#' @param TempAll.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param NameInpdf Path to save Quality plots and RDS data.
 #' @param saveDIR Suffix to be added to CCA files.
 #' @param FeatureUseCount A numeric value. This will call SelectIntegrationFeatures to select the provided number of features to be used in anchor finding
@@ -9,16 +9,16 @@
 #' @param res Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities. Algorithm for modularity optimization (1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm; 4 = Leiden algorithm). Leiden requires the leidenalg python.
 #' @param plots Save CCA plots
 #' @param save Save integrated CCA RDS Seurat object
-#' @keywords Sampleall.object, NameInpdf, saveDIR, FeatureUseCount, CCAdimchosen, res, plots, save
+#' @keywords TempAll.object, NameInpdf, saveDIR, FeatureUseCount, CCAdimchosen, res, plots, save
 #' @export
 #' @examples
 #' Perform_CCA()
 
 
 
-Perform_CCA <- function(Sampleall.object, NameInpdf, saveDIR, FeatureUseCount=2500, CCAdimchosen=30, res = 0.5, plots = TRUE, save = TRUE){
+Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500, CCAdimchosen=30, res = 0.5, plots = TRUE, save = TRUE){
   
-  TempAll.object=Sampleall.object
+  #TempAll.object=Sampleall.object
   
   print(paste0("Performing CCA for ",length(TempAll.object)," Objects"))
   
@@ -46,7 +46,7 @@ Perform_CCA <- function(Sampleall.object, NameInpdf, saveDIR, FeatureUseCount=25
   temp.integrated <- RunPCA(object = temp.integrated, npcs = CCAdimchosen, verbose = FALSE)
   temp.integrated <- RunUMAP(object = temp.integrated, reduction = "pca", dims = 1:CCAdimchosen)
   
-  
+  p=q=list()
   temp.integrated1 <- temp.integrated
   Tempreslist=c("0.1", "0.2", "0.3", "0.5", "0.8")
   for(Tempres in Tempreslist){

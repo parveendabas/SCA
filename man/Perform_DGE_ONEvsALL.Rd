@@ -5,7 +5,7 @@
 \title{A Perform_DGE_ONEvsALL Function}
 \usage{
 Perform_DGE_ONEvsALL(
-  Seurat.object,
+  Temp.object,
   saveDIR,
   GroupColOrder,
   SuffixName = "ALLcells",
@@ -23,7 +23,7 @@ Perform_DGE_ONEvsALL(
 )
 }
 \arguments{
-\item{Seurat.object}{A list of Seurat objects between which to find anchors for downstream integration.}
+\item{Temp.object}{A list of Seurat objects between which to find anchors for downstream integration.}
 
 \item{saveDIR}{Path to save generated data.}
 
@@ -65,8 +65,8 @@ Perform_DGE_ONEvsALL()
 \keyword{GroupCol,}
 \keyword{GroupColOrder}
 \keyword{GroupColPalette,}
-\keyword{Seurat.object,}
 \keyword{SuffixName="ALLcells",}
+\keyword{Temp.object,}
 \keyword{ToUseCol=,}
 \keyword{ToUseOrder,}
 \keyword{ToUsePallete,}
