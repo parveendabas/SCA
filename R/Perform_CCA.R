@@ -46,6 +46,37 @@ Perform_CCA <- function(Sampleall.object, NameInpdf, saveDIR, FeatureUseCount=25
   temp.integrated <- RunPCA(object = temp.integrated, npcs = CCAdimchosen, verbose = FALSE)
   temp.integrated <- RunUMAP(object = temp.integrated, reduction = "pca", dims = 1:CCAdimchosen)
   
+  
+  temp.integrated1 <- temp.integrated
+  Tempreslist=c("0.1", "0.2", "0.3", "0.5", "0.8")
+  for(Tempres in Tempreslist){
+    #for(Tempres in c("0.1", "0.2", "0.3")){
+    #Tempres="0.1"
+    
+    print(paste0("Processing for Temp resolution ",Tempres))
+    temp.integrated1 <- FindNeighbors(temp.integrated1, dims = 1:CCAdimchosen)
+    temp.integrated1 <- FindClusters(temp.integrated1, resolution = as.numeric(Tempres))
+    
+    
+    if (plots == TRUE) {
+      print(paste0("Generating different resolution plots for PCA ",CCAdimchosen))
+      
+      p[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "seurat_clusters")
+      q[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "orig.ident")
+      #print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
+    }
+    
+  }
+  rm(temp.integrated1)
+  
+  pdf(file=paste0("Plots_CCA_",NameInpdf,"_PC",CCAdimchosen,"_Different_Resolutions.pdf"),height = 10,width = 14)
+  print(ElbowPlot(temp.integrated, ndims = CCAdimchosen) + ggtitle(paste("PCs ",CCAdimchosen)))
+  print(plot_grid(q[["0.1"]]))
+  #print(plot_grid(p[["0.1"]], p[["0.2"]], p[["0.3"]], p[["0.4"]], p[["0.5"]], p[["0.6"]], p[["0.7"]], p[["0.8"]], p[["0.9"]], ncol = 3),
+  blank <- ggplot() + theme_bw() + ggtitle(paste0("PCs ",CCAdimchosen)) + theme(plot.title = element_text(size=50, colour = "red"))
+  print(plot_grid(p[["0.1"]], p[["0.2"]], p[["0.3"]], p[["0.5"]], p[["0.8"]], blank, ncol = 3, labels=c("0.1", "0.2", "0.3", "0.5", "0.8")))
+  dev.off()
+  
   temp.integrated <- FindNeighbors(temp.integrated, dims = 1:CCAdimchosen)
   temp.integrated <- FindClusters(temp.integrated, resolution = res)
   
