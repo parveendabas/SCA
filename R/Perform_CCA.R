@@ -7,16 +7,17 @@
 #' @param FeatureUseCount A numeric value. This will call SelectIntegrationFeatures to select the provided number of features to be used in anchor finding
 #' @param CCAdimchosen Which dimensions to use from the CCA to specify the neighbor search space
 #' @param res Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities. Algorithm for modularity optimization (1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm; 4 = Leiden algorithm). Leiden requires the leidenalg python.
+#' @param res k.filter	How many neighbors (k) to use when filtering anchors
 #' @param plots Save CCA plots
 #' @param save Save integrated CCA RDS Seurat object
-#' @keywords TempAll.object, NameInpdf, saveDIR, FeatureUseCount, CCAdimchosen, res, plots, save
+#' @keywords TempAll.object, NameInpdf, saveDIR, FeatureUseCount, CCAdimchosen, res, k.filter, plots, save
 #' @export
 #' @examples
 #' Perform_CCA()
 
 
 
-Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500, CCAdimchosen=30, res = 0.5, plots = TRUE, save = TRUE){
+Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500, CCAdimchosen=30, res = 0.5, k.filter = 200, plots = TRUE, save = TRUE){
   
   #TempAll.object=Sampleall.object
   
@@ -24,7 +25,7 @@ Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500
   
   reference.list <- c(TempAll.object)
   print(paste0("Finding IntegrationAnchors"))
-  sample.anchors <- FindIntegrationAnchors(object.list = reference.list, dims = 1:CCAdimchosen, anchor.features = FeatureUseCount)
+  sample.anchors <- FindIntegrationAnchors(object.list = reference.list, dims = 1:CCAdimchosen, anchor.features = FeatureUseCount, k.filter = k.filter)
   
   ## We then pass these anchors to the IntegrateData function, which returns a Seurat object.
   ## The returned object will contain a new Assay, which holds an integrated (or ‘batch-corrected’) expression matrix for all cells, enabling them to be jointly analyzed.

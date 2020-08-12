@@ -6,6 +6,7 @@
 \usage{
 Create_Table(
   SCdata,
+  BeforeFilter,
   mincells = 3,
   mingenes = 500,
   mtpercent = 20,

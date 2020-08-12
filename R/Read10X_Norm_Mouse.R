@@ -29,6 +29,8 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
   
   print("Creating Seurat Object")
   print(paste0("min.cells:",mincells, ", min.features:",mingenes))
+  BeforeFilter=ncol(data)
+  print(paste0(Sample, " cells BEFORE filtering:",BeforeFilter))
   SCdata <- CreateSeuratObject(counts = data, project = Sample, min.cells = mincells, min.features = mingenes)
   SCdata@meta.data$Cells <- rownames(SCdata@meta.data)
   SCdata@meta.data$Project <- Sample
@@ -45,6 +47,7 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
   print("Filtering Data based on specified filters")
   print(paste0("mtpercent:",mtpercent, ", rbpercent:",rbpercent))
   SCdata <- subset(SCdata, subset = percent.mt < mtpercent & percent.rb < rbpercent)
+  print(paste0(Sample, " cells AFTER filtering:",nrow(SCdata@meta.data)))
   
   print("Normalizing Data")
   print("Normalizing Method: LogNormalize: Feature counts for each cell are divided by the total counts for that cell and multiplied by the scale.factor. This is then natural-log transformed using log1p.")
@@ -55,7 +58,7 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
   print("Generating quality plots")
     setwd(saveDIR)
     pdf(file=paste0("QC_",Sample,".pdf"),height = 8,width = 10)
-    Create_Table(SCdata)
+    Create_Table(SCdata, BeforeFilter=BeforeFilter, mincells=mincells, mingenes=mingenes, mtpercent=mtpercent, rbpercent=rbpercent)
     print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
     dev.off()
     }

@@ -18,15 +18,17 @@
 
 
 
-Create_Table <- function(SCdata, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, nRows=40, coreFont=2.5, colheadFont=2.5, rowheadFont=2.5, titlesize=25){
+Create_Table <- function(SCdata, BeforeFilter, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, nRows=40, coreFont=2.5, colheadFont=2.5, rowheadFont=2.5, titlesize=25){
   
-  cutoff.df <- data.frame(Value = t(data.frame(Cells = nrow(SCdata@meta.data), min.genes=mingenes, min.cells = mincells, MTpercent=mtpercent, RBpercent = rbpercent))); cutoff.df
-  cutoff.df$Project <- rownames(cutoff.df)
-  colnames(cutoff.df) <- c("Sample", "Value")
+  cutoff.df <- data.frame(Value = t(data.frame(Cells = nrow(SCdata@meta.data), min.genes=mingenes, min.cells = mincells, MTpercent=mtpercent, RBpercent = rbpercent, BeforeFilter = BeforeFilter))); cutoff.df
+  cutoff.df$Sample <- rownames(cutoff.df)
+  print(head(cutoff.df))
+  #colnames(cutoff.df) <- c("Sample", "Value")
   cutoff.df <- cutoff.df[,c("Sample", "Value")]
   TableDF <- cutoff.df
   FontsDF <- c(coreFont,colheadFont,rowheadFont)
-  titleDF <- paste0(Sample)
+  #titleDF <- paste0(Sample)
+  titleDF <- paste0("Table")
   #func.PlotTable.General(TableDF, FontsDF, titleDF, 25)
   
   TableGI <- head(TableDF, nRows)

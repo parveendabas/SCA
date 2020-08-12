@@ -11,6 +11,7 @@ Perform_CCA(
   FeatureUseCount = 2500,
   CCAdimchosen = 30,
   res = 0.5,
+  k.filter = 200,
   plots = TRUE,
   save = TRUE
 )
@@ -26,7 +27,7 @@ Perform_CCA(
 
 \item{CCAdimchosen}{Which dimensions to use from the CCA to specify the neighbor search space}
 
-\item{res}{Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities. Algorithm for modularity optimization (1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm; 4 = Leiden algorithm). Leiden requires the leidenalg python.}
+\item{res}{k.filter    How many neighbors (k) to use when filtering anchors}
 
 \item{plots}{Save CCA plots}
 
@@ -42,6 +43,7 @@ Perform_CCA()
 \keyword{FeatureUseCount,}
 \keyword{NameInpdf,}
 \keyword{TempAll.object,}
+\keyword{k.filter,}
 \keyword{plots,}
 \keyword{res,}
 \keyword{save}
