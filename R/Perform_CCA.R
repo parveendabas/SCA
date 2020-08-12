@@ -91,7 +91,7 @@ Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500
     print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
     print(DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters", split.by = GroupName, ncol = 3))
     print(DimPlot(temp.integrated, reduction = "umap", group.by = GroupName, split.by = "seurat_clusters", ncol = 5))
-    Create_Table(temp.integrated)
+    #Create_Table(temp.integrated)
     print(VlnPlot(temp.integrated, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
     dev.off()
   }
