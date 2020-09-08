@@ -1,8 +1,9 @@
-#' A Create_Table Function
+#' A Create_Table_Doublets Function
 #'
 #' This function create table for Seurat Normalzied data.
 #' @param SCdata Seurat object to count number of cells.
 #' @param BeforeFilter Total number of cells before filtering
+#' @param Doublets Total number of Doublets detected
 #' @param SampleName Sample Name
 #' @param mincells Include features detected in at least this many cells. Will subset the counts matrix as well. To reintroduce excluded features, create a new object with a lower cutoff.
 #' @param mingenes Include cells where at least this many features are detected.
@@ -16,13 +17,13 @@
 #' @keywords matrix.DIR, mincells, mingenes, mtpercent, rbpercent, Sample
 #' @export
 #' @examples
-#' Create_Table()
+#' Create_Table_Doublets()
 
 
 
-Create_Table <- function(SCdata, BeforeFilter, SampleName=NULL, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, nRows=40, coreFont=2.5, colheadFont=2.5, rowheadFont=2.5, titlesize=25){
+Create_Table_Doublets <- function(SCdata, BeforeFilter, Doublets, SampleName=NULL, mincells=3, mingenes=500, mtpercent=20, rbpercent=50, nRows=40, coreFont=2.5, colheadFont=2.5, rowheadFont=2.5, titlesize=25){
   
-  cutoff.df <- data.frame(Value = t(data.frame(Cells = nrow(SCdata@meta.data), min.genes=mingenes, min.cells = mincells, MTpercent=mtpercent, RBpercent = rbpercent, BeforeFilter = BeforeFilter))); cutoff.df
+  cutoff.df <- data.frame(Value = t(data.frame(Cells = nrow(SCdata@meta.data), min.genes=mingenes, min.cells = mincells, MTpercent=mtpercent, RBpercent = rbpercent, Doublets=Doublets, BeforeFilter = BeforeFilter))); cutoff.df
   cutoff.df$Sample <- rownames(cutoff.df)
   print(head(cutoff.df))
   #colnames(cutoff.df) <- c("Sample", "Value")
