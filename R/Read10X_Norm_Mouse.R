@@ -61,6 +61,8 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
     Create_Table(SCdata, BeforeFilter=BeforeFilter, mincells=mincells, mingenes=mingenes, mtpercent=mtpercent, rbpercent=rbpercent)
     print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
     dev.off()
+  } else {
+      print("Skipping plotting table, plots == FALSE")
     }
   
   if (save == TRUE) {
@@ -68,6 +70,8 @@ Read10X_Norm_Mouse <- function(matrix.DIR, saveDIR, Sample, mincells=3, mingenes
   setwd(saveDIR)
   write.table(SCdata@meta.data,file=paste0("Meta_Data_",Sample,".txt"),quote=F,sep="\t")
   saveRDS(SCdata, file = paste0(Sample,".rds"))
+  } else {
+    print("Skipping saving RDS object, save == FALSE")
   }
   
   return(SCdata)
