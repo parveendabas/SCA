@@ -35,7 +35,7 @@ load_Packages_SeuratAnalysis <- function(){
   library(gridBase)
   library(ggrepel)
   library(calibrate)
-  library(futile.matrix)
+  #library(futile.matrix)
   library(ggplotify)
   
 }
