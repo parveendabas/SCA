@@ -193,7 +193,8 @@ Doublet_Detection_Mouse <- function(SeuratObject, saveDIR, Sample, FeatureUseCou
                                centroids=TRUE,
                                num_doubs=100, 
                                only50=FALSE,
-                               min_uniq=4)
+                               min_uniq=4,
+                               nCores=1)
     
     
     head(results$Final_doublets_groups); dim(results$Final_doublets_groups)
