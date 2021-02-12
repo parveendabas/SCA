@@ -6,6 +6,7 @@
 \usage{
 Filter_Genes_from_Variable_Genelist_Mouse(
   SCdata,
+  Species = "hsa",
   mt = TRUE,
   rb = TRUE,
   cc = FALSE
@@ -14,6 +15,8 @@ Filter_Genes_from_Variable_Genelist_Mouse(
 \arguments{
 \item{SCdata}{Seurat Object}
 
+\item{Species}{Species Name. Valid options are hsa or mmu}
+
 \item{mt}{mitochondrial genes (MOUSE) to be removed from Seurat object}
 
 \item{rb}{ribosomal genes (MOUSE) to be removed from Seurat object}
@@ -21,7 +24,7 @@ Filter_Genes_from_Variable_Genelist_Mouse(
 \item{cc}{CellCycle genes (Converted from Human to Mouse) to be removed from Seurat object}
 }
 \description{
-This function allows you to express your love of cats.
+This function allows you to filter genes for mt, ribosomal and cell cycle list.
 }
 \examples{
 Filter_Genes_from_Variable_Genelist_Mouse()

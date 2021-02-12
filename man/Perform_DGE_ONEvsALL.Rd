@@ -8,8 +8,9 @@ Perform_DGE_ONEvsALL(
   Temp.object,
   saveDIR,
   GroupColOrder,
+  Species = "hsa",
   SuffixName = "ALLcells",
-  GroupColPalette = cbPalette.Group.Dark,
+  GroupColPalette = Dark.Pallette,
   GroupCol = "orig.ident",
   ToUseCol = "seurat_clusters",
   ToUseOrder = ClusOrder,
@@ -28,6 +29,8 @@ Perform_DGE_ONEvsALL(
 \item{saveDIR}{Path to save generated data.}
 
 \item{GroupColOrder}{Factor order for Sample group column name}
+
+\item{Species}{Species Name. Valid options are hsa or mmu}
 
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
@@ -54,7 +57,7 @@ Perform_DGE_ONEvsALL(
 \item{save}{Save integrated CCA RDS Seurat object}
 }
 \description{
-This function allows you to express your love of cats.
+This function allows you to perform differential gene analysis.
 }
 \examples{
 Perform_DGE_ONEvsALL()

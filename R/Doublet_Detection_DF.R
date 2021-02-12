@@ -1,9 +1,10 @@
-#' A Read10X_Norm_Mouse Function
+#' A Doublet_Detection_DF Function
 #'
-#' This function allows you to express your love of cats.
+#' This function allows you to detect doublets using both Doublet_Finder algorithm.
 #' @param SeuratObject Seurat Object.
 #' @param saveDIR Path to save Quality plots and RDS data.
 #' @param Sample Sample Name.
+#' @param Species Species Name. Valid options are hsa or mmu.
 #' @param FeatureUseCount Number of features to select as top variable features; only used when selection.method is set to 'dispersion' or 'vst'
 #' @param PCAnum Number of PCs to be used
 #' @param resClus Resolution to be used for clustering
@@ -13,11 +14,11 @@
 #' @keywords SeuratObject, saveDIR, Sample, FeatureUseCount, PCAnum, resClus, ClusPallette, DoubletFinder, DoubletDecon
 #' @export
 #' @examples
-#' Read10X_Norm_Mouse()
+#' Doublet_Detection_DF()
 
 
 
-Doublet_Detection_Mouse <- function(SeuratObject, saveDIR, Sample, FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = TRUE){
+Doublet_Detection_Mouse <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = FALSE){
   
   #SeuratObject=TempSCdata
   #saveDIR=saveDIR

@@ -2,11 +2,12 @@
 
 export(Create_Table)
 export(Create_Table_Doublets)
+export(Doublet_Detection_DF_DD)
 export(Doublet_Detection_Mouse)
 export(Filter_Genes_from_Variable_Genelist_Mouse)
 export(Perform_CCA)
 export(Perform_CCA_Diff_PCAdim_res)
 export(Perform_DGE_ONEvsALL)
-export(Read10X_Norm_Mouse)
+export(Read10X_Norm)
 export(Read10X_RemoveDoublets_Norm_Mouse)
 export(load_Packages_SeuratAnalysis)

@@ -1,10 +1,11 @@
 #' A Perform_DGE_ONEvsALL Function
 #'
-#' This function allows you to express your love of cats.
+#' This function allows you to perform differential gene analysis.
 #' @param Temp.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param saveDIR Path to save generated data.
 #' @param GroupColOrder Factor order for Sample group column name
+#' @param Species Species Name. Valid options are hsa or mmu
 #' @param GroupColPalette Sample group color palette
 #' @param GroupCol Sample group column name
 #' @param ToUseCol Column to be used (Default is seurat_cluster)
@@ -23,8 +24,8 @@
 
 
 
-Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder,
-                                 SuffixName="ALLcells", GroupColPalette=cbPalette.Group.Dark, GroupCol="orig.ident",
+Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder, Species="hsa",
+                                 SuffixName="ALLcells", GroupColPalette=Dark.Pallette, GroupCol="orig.ident",
                                  ToUseCol="seurat_clusters", ToUseOrder=ClusOrder, ToUsePallete=ClusPallette,
                                  FDR = 0.1, FCcutoff = 1.5, topnumber = 5, downsampleHeatmap = 300, plots = TRUE, save = TRUE){
   
@@ -151,7 +152,15 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder,
     Idents(Temp.object) <- factor(Idents(Temp.object), levels= ToUseOrder[ToUseOrder %in% unique(Temp.object@meta.data[,ToUseCol])])
     markers <- FindAllMarkers(Temp.object, only.pos = TRUE, min.pct = 0.25, logfc.threshold = log2(FCcutoff), assay = "RNA")
     markers <- markers[markers$p_val_adj < FDR,]; dim(markers)
+    
+    if(Species=="hsa"){
+      print("Removing MT and Ribosomal genes of Human")
+    markers <- Remove_Genes_Rp_mt_Rna_Human(markers)
+    } else {
+      print("Removing MT and Ribosomal genes of Mouse")
     markers <- Remove_Genes_Rp_mt_Rna_Mouse(markers)
+    }
+    
     head(markers, n = 15); print(dim(markers))
     if(nrow(markers) > 0){
       top <- markers %>% group_by(cluster) %>% top_n(n = topnumber, wt = avg_logFC); top <- top[!duplicated(top$gene),]; dim(top); 
@@ -224,7 +233,15 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder,
     cond.markers$gene <- rownames(cond.markers)
     print(head(cond.markers, n = 15)); print(dim(cond.markers))
     cond.markers <- cond.markers[cond.markers$p_val_adj < FDR,]; dim(cond.markers)
-    cond.markers <- Remove_Genes_Rp_mt_Rna_Mouse(cond.markers)
+    
+    if(Species=="hsa"){
+      print("Removing MT and Ribosomal genes of Human")
+    cond.markers <- Remove_Genes_Rp_mt_Rna_Human(cond.markers)
+    } else {
+      print("Removing MT and Ribosomal genes of Mouse")
+      cond.markers <- Remove_Genes_Rp_mt_Rna_Mouse(cond.markers)
+    }
+    
     sigGenes <- rownames(cond.markers)
     print(paste0("DONE: DGEs of ",ID1, " VS rest of the cells"))
     
