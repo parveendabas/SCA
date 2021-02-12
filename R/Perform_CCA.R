@@ -1,6 +1,6 @@
 #' A Perform_CCA Function
 #'
-#' This function allows you to express your love of cats.
+#' This function allows you to perform CCA. For the selected PC, different resoultion ("0.1", "0.2", "0.3", "0.5", "0.8") will be computed for clustering
 #' @param TempAll.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param NameInpdf Path to save Quality plots and RDS data.
 #' @param saveDIR Suffix to be added to CCA files.

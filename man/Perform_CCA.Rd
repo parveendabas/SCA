@@ -34,7 +34,7 @@ Perform_CCA(
 \item{save}{Save integrated CCA RDS Seurat object}
 }
 \description{
-This function allows you to express your love of cats.
+This function allows you to perform CCA. For the selected PC, different resoultion ("0.1", "0.2", "0.3", "0.5", "0.8") will be computed for clustering
 }
 \examples{
 Perform_CCA()

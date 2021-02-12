@@ -42,7 +42,15 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
     #SeuratObject <- NormalizeData(SeuratObject)
     # The [[ operator can add columns to object metadata. This is a great place to stash QC stats
-    SeuratObject[["percent.mt"]] <- PercentageFeatureSet(SeuratObject, pattern = "^mt-")
+    
+    if(Species=="hsa"){
+      print("Counting MT % for Human")
+      SeuratObject[["percent.mt"]] <- PercentageFeatureSet(SeuratObject, pattern = "^MT-")
+    } else {
+      print("Counting MT % for Mouse")
+      SeuratObject[["percent.mt"]] <- PercentageFeatureSet(SeuratObject, pattern = "^mt-")
+    }
+    
     # Visualize QC metrics as a violin plot
     p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
     print(p1)

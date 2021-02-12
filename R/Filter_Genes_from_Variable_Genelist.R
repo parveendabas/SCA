@@ -1,4 +1,4 @@
-#' A Filter_Genes_from_Variable_Genelist_Mouse Function
+#' A Filter_Genes_from_Variable_Genelist Function
 #'
 #' This function allows you to filter genes for mt, ribosomal and cell cycle list.
 #' @param SCdata Seurat Object
@@ -9,9 +9,9 @@
 #' @keywords SCdata, mt, rb, cc
 #' @export
 #' @examples
-#' Filter_Genes_from_Variable_Genelist_Mouse()
+#' Filter_Genes_from_Variable_Genelist()
 
-Filter_Genes_from_Variable_Genelist_Mouse <- function(SCdata, Species="hsa", mt = TRUE, rb = TRUE, cc = FALSE){
+Filter_Genes_from_Variable_Genelist <- function(SCdata, Species="hsa", mt = TRUE, rb = TRUE, cc = FALSE){
   
   
   if(Species=="hsa"){

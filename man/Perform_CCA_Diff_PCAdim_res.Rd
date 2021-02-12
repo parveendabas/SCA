@@ -28,7 +28,7 @@ Perform_CCA_Diff_PCAdim_res(
 \item{save}{Save integrated CCA RDS Seurat object}
 }
 \description{
-This function allows you to express your love of cats.
+This function allows you to perform CCA at different res.
 }
 \examples{
 Perform_CCA_Diff_PCAdim_res()

@@ -1,6 +1,6 @@
 #' A Perform_CCA_Diff_PCAdim_res Function
 #'
-#' This function allows you to express your love of cats.
+#' This function allows you to perform CCA at different res.
 #' @param Sampleall.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param NameInpdf Path to save Quality plots and RDS data.
 #' @param saveDIR Suffix to be added to CCA files.
