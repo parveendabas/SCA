@@ -167,7 +167,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   setwd(DDdir)
   SeuratObject@meta.data$DoubletfromFinder <- "Singlet"
   SeuratObject@meta.data[rownames(DoubletfromFinder), "DoubletfromFinder"] <- "Doublet"
-  write.table(SeuratObject@meta.data, file = paste0("Comparison_DoubletDeconFinder_Doublets_Detected_", 
+  write.table(SeuratObject@meta.data, file = paste0("Comparison_DoubletFinder_Doublets_Detected_", 
                                                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
                                                     ".txt"), quote = F, sep = "\t")
   setwd(DDdir)

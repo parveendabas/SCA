@@ -6,9 +6,13 @@
 \usage{
 load_Packages_SeuratAnalysis()
 }
+\arguments{
+\item{load_Packages_SeuratAnalysis}{load_Packages_SeuratAnalysis}
+}
 \description{
 This function load all the required packages for Seurat Analysis.
 }
 \examples{
 load_Packages_SeuratAnalysis()
 }
+\keyword{load_Packages_SeuratAnalysis}
