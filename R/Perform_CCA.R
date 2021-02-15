@@ -62,8 +62,8 @@ Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500
     if (plots == TRUE) {
       print(paste0("Generating different resolution plots for PCA ",CCAdimchosen))
       
-      p[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "seurat_clusters")
-      q[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "orig.ident")
+      p[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "seurat_clusters", cols = ClusPalette, label = T, label.size = 5)
+      q[[Tempres]]  <- DimPlot(temp.integrated1, reduction = "umap", group.by = "orig.ident", cols = Dark.Pallette)
       #print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
     }
     
@@ -86,11 +86,11 @@ Perform_CCA <- function(TempAll.object, NameInpdf, saveDIR, FeatureUseCount=2500
     print("Generating quality plots")
     pdf(file=paste0("Plots_CCA_",NameInpdf,".pdf"),height = 10,width = 14)
     print(ElbowPlot(temp.integrated, ndims = CCAdimchosen) + ggtitle(paste("PCs ",CCAdimchosen)))
-    p1 <- DimPlot(temp.integrated, reduction = "umap", group.by = GroupName)
-    p2 <- DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters")
+    p1 <- DimPlot(temp.integrated, reduction = "umap", group.by = GroupName, cols = Dark.Pallette)
+    p2 <- DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters", cols = ClusPalette, label = T, label.size = 5)
     print(plot_grid(p1, p2, NULL, NULL, nrow = 2))
-    print(DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters", split.by = GroupName, ncol = 3))
-    print(DimPlot(temp.integrated, reduction = "umap", group.by = GroupName, split.by = "seurat_clusters", ncol = 5))
+    print(DimPlot(temp.integrated, reduction = "umap", group.by = "seurat_clusters", split.by = GroupName, ncol = 3, cols = ClusPalette))
+    print(DimPlot(temp.integrated, reduction = "umap", group.by = GroupName, split.by = "seurat_clusters", ncol = 5, cols = Dark.Pallette))
     #Create_Table(temp.integrated)
     print(VlnPlot(temp.integrated, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
     dev.off()
