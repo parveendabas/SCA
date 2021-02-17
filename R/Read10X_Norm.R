@@ -48,10 +48,10 @@ Read10X_Norm <- function(matrix.DIR, saveDIR, Sample, Species="hsa", mincells=3,
   } else if (Species=="mmu"){
     print("Counting MT and Ribosomal % for Mouse")
     # The [[ operator can add columns to object metadata. This is a great place to stash QC stats
-    mt.genes <- rownames(SCdata@assays$RNA@counts)[rownames(SCdata@assays$RNA@counts) %like% "^MT-"]; mt.genes; length(mt.genes)
-    SCdata[["percent.mt"]] <- PercentageFeatureSet(SCdata, pattern = "^MT-")
-    rb.genes <- rownames(SCdata@assays$RNA@counts)[rownames(SCdata@assays$RNA@counts) %like% "^RP[SL]"]; rb.genes; length(rb.genes)
-    SCdata[["percent.rb"]] <- PercentageFeatureSet(SCdata, pattern = "^RP[SL]")
+    mt.genes <- rownames(SCdata@assays$RNA@counts)[rownames(SCdata@assays$RNA@counts) %like% "^mt-"]; mt.genes; length(mt.genes)
+    SCdata[["percent.mt"]] <- PercentageFeatureSet(SCdata, pattern = "^mt-")
+    rb.genes <- rownames(SCdata@assays$RNA@counts)[rownames(SCdata@assays$RNA@counts) %like% "^Rp[sl]"]; rb.genes; length(rb.genes)
+    SCdata[["percent.rb"]] <- PercentageFeatureSet(SCdata, pattern = "^Rp[sl]")
     #print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 2))  
   } else {
     print("Valid options for species are Human or Mouse only")
