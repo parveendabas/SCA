@@ -65,7 +65,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     #plot2 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "nFeature_RNA", cols = ClusPallette)
     #print(CombinePlots(plots = list(plot1, plot2)))
     
-    print("Finished Plotting")
+    print("Skipped VlnPlot")
     
     SeuratObject <- FindVariableFeatures(SeuratObject, selection.method = "vst", nfeatures = FeatureUseCount)
     # Identify the 10 most highly variable genes
@@ -75,22 +75,15 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
     print(CombinePlots(plots = list(plot1, plot2)))
     
-    print("Finished Check1")
-    
     SeuratObject <- ScaleData(SeuratObject)
     SeuratObject <- RunPCA(SeuratObject)
     print(ElbowPlot(SeuratObject))
     print(ElbowPlot(SeuratObject, ndims = 50))
     print(DimHeatmap(SeuratObject, dims = 1:12, cells = 500, balanced = TRUE))
     
-    print("Finished Check2")
-    
-    
     ## Clusters
     SeuratObject <- FindNeighbors(SeuratObject, dims = 1:PCAnum)
     SeuratObject <- FindClusters(SeuratObject, resolution = resClus)
-    
-    print("Finished Check3")
     
     Idents(object = SeuratObject) <- "seurat_clusters"
     #print(VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.01, ncol = 2))
@@ -157,9 +150,9 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     Create_Table(SeuratObject, BeforeFilter=0)
     
     
-    p1 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "seurat_clusters", label = TRUE, repel = TRUE, cols = ClusPallette)
-    p2 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "DoubletFinder", pt.size=1.5, cols=c("red", "dodgerblue", "black"))
-    print(plot_grid(p1, p2, NULL))
+    #p1 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "seurat_clusters", label = TRUE, repel = TRUE, cols = ClusPallette)
+    #p2 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "DoubletFinder", pt.size=1.5, cols=c("red", "dodgerblue", "black"))
+    #print(plot_grid(p1, p2, NULL))
     dev.off()
     
     write.table(SeuratObject@meta.data,file=paste0("Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
@@ -188,6 +181,9 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   write.table(SeuratObject@meta.data, file = paste0("Comparison_DoubletFinder_Doublets_Detected_", 
                                                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
                                                     ".txt"), quote = F, sep = "\t")
+  
+  print("Doing Final Plotting")
+  
   setwd(DDdir)
   pdf(file = paste0("Comparison_Plots_Doublets_Detected_", 
                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
