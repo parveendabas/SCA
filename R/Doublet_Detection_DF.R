@@ -93,8 +93,9 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     print("Finished Check3")
     
     Idents(object = SeuratObject) <- "seurat_clusters"
-    p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
-    print(p1)
+    print(VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1))
+    
+    print("Finished VlnPlot")
     
     SeuratObject <- RunUMAP(SeuratObject, dims = 1:PCAnum)
     print(DimPlot(SeuratObject, reduction = "umap", label=TRUE, label.size = 8, pt.size = 0.5, cols = ClusPallette) + ggtitle(paste0(Sample, " (",nrow(SeuratObject@meta.data)," cells)")))
