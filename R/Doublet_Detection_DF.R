@@ -55,12 +55,17 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
       SeuratObject[["percent.rb"]] <- PercentageFeatureSet(SeuratObject, pattern = "^Rp[sl]")
     }
     
+    print("Finished Counting")
+    print(head(SeuratObject@meta.data))
+    
     # Visualize QC metrics as a violin plot
     p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
     print(p1)
     plot1 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "percent.mt", cols = ClusPallette)
     plot2 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "nFeature_RNA", cols = ClusPallette)
     print(CombinePlots(plots = list(plot1, plot2)))
+    
+    print("Finished Plotting")
     
     SeuratObject <- FindVariableFeatures(SeuratObject, selection.method = "vst", nfeatures = FeatureUseCount)
     # Identify the 10 most highly variable genes
