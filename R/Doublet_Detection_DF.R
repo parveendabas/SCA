@@ -20,9 +20,10 @@
 
 Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = FALSE){
   
-  #SeuratObject=TempSCdata
+  #SeuratObject=SCdata
   #saveDIR=saveDIR
   #Sample=Sample
+  #FeatureUseCount=2000
   
   library(DoubletDecon)
   library(DoubletFinder)
@@ -37,7 +38,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     
     setwd(DDdir)
     pdf(file=paste0("PreProcess_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
-    print(paste0("Loading Seurat object for: ",name))
+    print(paste0("Loading Seurat object for: ",Sample))
     
     ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
     #SeuratObject <- NormalizeData(SeuratObject)
@@ -177,7 +178,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   table(SeuratObject@meta.data$DoubletfromFinder)
   p1 <- DimPlot(SeuratObject, label.size = 6, group.by = "DoubletfromFinder") + 
     ggtitle(paste0("DoubletfromFinder"))
-  table(SeuratObject@meta.data$DoubletfromDecon)
+  table(SeuratObject@meta.data$DoubletfromFinder)
   
   if(Species=="hsa"){
     p2 <- FeaturePlot(SeuratObject, features = "TOP2A")
