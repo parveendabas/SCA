@@ -93,7 +93,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     print("Finished Check3")
     
     Idents(object = SeuratObject) <- "seurat_clusters"
-    print(VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1))
+    print(VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.01, ncol = 1))
     
     print("Finished VlnPlot")
     
