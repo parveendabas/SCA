@@ -55,8 +55,6 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
       SeuratObject[["percent.rb"]] <- PercentageFeatureSet(SeuratObject, pattern = "^Rp[sl]")
     }
     
-    print("Finished Counting")
-    
     # Visualize QC metrics as a violin plot
     p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
     print(p1)
@@ -72,15 +70,22 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
     print(CombinePlots(plots = list(plot1, plot2)))
     
+    print("Finished Check1")
+    
     SeuratObject <- ScaleData(SeuratObject)
     SeuratObject <- RunPCA(SeuratObject)
     print(ElbowPlot(SeuratObject))
     print(ElbowPlot(SeuratObject, ndims = 50))
     print(DimHeatmap(SeuratObject, dims = 1:12, cells = 500, balanced = TRUE))
     
+    print("Finished Check2")
+    
+    
     ## Clusters
     SeuratObject <- FindNeighbors(SeuratObject, dims = 1:PCAnum)
     SeuratObject <- FindClusters(SeuratObject, resolution = resClus)
+    
+    print("Finished Check3")
     
     Idents(object = SeuratObject) <- "seurat_clusters"
     p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
