@@ -143,13 +143,13 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     print(table(SeuratObject@meta.data$DoubletFinder))
     
     head(SeuratObject@meta.data)
-    cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); cutoff.df
+    cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); print(cutoff.df)
     TableDF <- cutoff.df
     FontsDF <- c(2.5,2.5,2.5)
     titleDF <- paste0(Sample,": Doublets Detected")
     func.PlotTable.General(TableDF, FontsDF, titleDF, 20)
     
-    Create_Table(SeuratObject, BeforeFilter=0)
+    print(Create_Table(SeuratObject, BeforeFilter=0))
     
     print("Plotted Table")
     
@@ -204,6 +204,16 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   
   
   print(plot_grid(p1, p2, NULL, NULL, ncol = 2))
+  
+  head(SeuratObject@meta.data)
+  cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); print(cutoff.df)
+  TableDF <- cutoff.df
+  FontsDF <- c(2.5,2.5,2.5)
+  titleDF <- paste0(Sample,": Doublets Detected")
+  func.PlotTable.General(TableDF, FontsDF, titleDF, 20)
+  
+  Create_Table(SeuratObject, BeforeFilter=0)
+  
   dev.off()
    
   print("Done")
