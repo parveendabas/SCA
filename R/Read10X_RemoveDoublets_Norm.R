@@ -92,7 +92,7 @@ Read10X_RemoveDoublets_Norm <- function(matrix.DIR, saveDIR, Sample, Doublet.DIR
   if (plots == TRUE) {
     print("Generating quality plots")
     setwd(saveDIR)
-    pdf(file=paste0("QC_",Sample,".pdf"),height = 8,width = 10)
+    pdf(file=paste0("QC_Doublets_Removed_",Sample,".pdf"),height = 8,width = 10)
     Create_Table_Doublets(SCdata, BeforeFilter=BeforeFilter, Doublets=length(DiscardedDoublets), SampleName=Sample, mincells=mincells, mingenes=mingenes, mtpercent=mtpercent, rbpercent=rbpercent)
     #Create_Table(SCdata, BeforeFilter=BeforeFilter, SampleName=Sample, mincells=mincells, mingenes=mingenes, mtpercent=mtpercent, rbpercent=rbpercent)
     print(VlnPlot(SCdata, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), pt.size = 0.5, ncol = 2)) 
