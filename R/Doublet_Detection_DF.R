@@ -196,6 +196,8 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
     ggtitle(paste0("DoubletfromFinder"))
   table(SeuratObject@meta.data$DoubletfromFinder)
   
+  
+  if(skipCCgene=="NO"){
   if(Species=="hsa"){
     p2 <- FeaturePlot(SeuratObject, features = "TOP2A")
   } else {
@@ -204,6 +206,10 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   
   
   print(plot_grid(p1, p2, NULL, NULL, ncol = 2))
+  } else if(skipCCgene=="YES"){
+    
+    print(plot_grid(p1, NULL, NULL, NULL, ncol = 2))
+  }
   
   head(SeuratObject@meta.data)
   cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); print(cutoff.df)
