@@ -11,14 +11,15 @@
 #' @param ClusPallette Color pallete to be used for clusters
 #' @param DoubletFinder Run DoubletFinder
 #' @param DoubletDecon Run DoubletDecon
-#' @keywords SeuratObject, saveDIR, Sample, FeatureUseCount, PCAnum, resClus, ClusPallette, DoubletFinder, DoubletDecon
+#' @param plotCCgene Plots TOP2A gene or not
+#' @keywords SeuratObject, saveDIR, Sample, FeatureUseCount, PCAnum, resClus, ClusPallette, DoubletFinder, DoubletDecon plotCCgene
 #' @export
 #' @examples
 #' Doublet_Detection_DF()
 
 
 
-Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = FALSE){
+Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = FALSE, plotCCgene = TRUE){
   
   #SeuratObject=SCdata
   #saveDIR=saveDIR
@@ -197,7 +198,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   table(SeuratObject@meta.data$DoubletfromFinder)
   
   
-  if(skipCCgene=="NO"){
+  if(plotCCgene==TRUE){
   if(Species=="hsa"){
     p2 <- FeaturePlot(SeuratObject, features = "TOP2A")
   } else {
@@ -206,7 +207,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   
   
   print(plot_grid(p1, p2, NULL, NULL, ncol = 2))
-  } else if(skipCCgene=="YES"){
+  } else if(plotCCgene==FALSE){
     
     print(plot_grid(p1, NULL, NULL, NULL, ncol = 2))
   }

@@ -14,7 +14,8 @@ Doublet_Detection_DF(
   resClus = 0.5,
   ClusPallette = ClusPallette,
   DoubletFinder = TRUE,
-  DoubletDecon = FALSE
+  DoubletDecon = FALSE,
+  plotCCgene = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ Doublet_Detection_DF(
 \item{DoubletFinder}{Run DoubletFinder}
 
 \item{DoubletDecon}{Run DoubletDecon}
+
+\item{plotCCgene}{Plots TOP2A gene or not}
 }
 \description{
 This function allows you to detect doublets using both Doublet_Finder algorithm.
@@ -51,5 +54,6 @@ Doublet_Detection_DF()
 \keyword{PCAnum,}
 \keyword{Sample,}
 \keyword{SeuratObject,}
+\keyword{plotCCgene}
 \keyword{resClus,}
 \keyword{saveDIR,}
