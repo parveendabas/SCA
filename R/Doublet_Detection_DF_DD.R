@@ -38,7 +38,7 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     
     setwd(DDdir)
     pdf(file=paste0("PreProcess_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
-    print(paste0("Loading Seurat object for: ",name))
+    print(paste0("Loading Seurat object for: ",Sample))
     
     ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
     #SeuratObject <- NormalizeData(SeuratObject)
@@ -59,11 +59,13 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     print(head(SeuratObject@meta.data))
     
     # Visualize QC metrics as a violin plot
-    p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
-    print(p1)
-    plot1 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "percent.mt", cols = ClusPallette)
-    plot2 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "nFeature_RNA", cols = ClusPallette)
-    print(CombinePlots(plots = list(plot1, plot2)))
+    #p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
+    #print(p1)
+    #plot1 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "percent.mt", cols = ClusPallette)
+    #plot2 <- FeatureScatter(SeuratObject, feature1 = "nCount_RNA", feature2 = "nFeature_RNA", cols = ClusPallette)
+    #print(CombinePlots(plots = list(plot1, plot2)))
+    
+    print("Skipped VlnPlot")
     
     SeuratObject <- FindVariableFeatures(SeuratObject, selection.method = "vst", nfeatures = FeatureUseCount)
     # Identify the 10 most highly variable genes
@@ -84,12 +86,15 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     SeuratObject <- FindClusters(SeuratObject, resolution = resClus)
     
     Idents(object = SeuratObject) <- "seurat_clusters"
-    p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
-    print(p1)
+    #p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
+    #print(p1)
+    print("Skipped VlnPlot")
     
     SeuratObject <- RunUMAP(SeuratObject, dims = 1:PCAnum)
-    print(DimPlot(SeuratObject, reduction = "umap", label=TRUE, label.size = 8, pt.size = 0.5, cols = ClusPallette) + ggtitle(paste0(Sample, " (",nrow(SeuratObject@meta.data)," cells)")))
+    #print(DimPlot(SeuratObject, reduction = "umap", label=TRUE, label.size = 8, pt.size = 0.5, cols = ClusPallette) + ggtitle(paste0(Sample, " (",nrow(SeuratObject@meta.data)," cells)")))
     dev.off()
+    
+    print("Skipped DimPlot")
     
   }
   
@@ -150,9 +155,9 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     print("Plotted Table")
     
     
-    p1 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "seurat_clusters", label = TRUE, repel = TRUE, cols = ClusPallette)
-    p2 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "DoubletFinder", pt.size=1.5, cols=c("red", "dodgerblue", "black"))
-    print(plot_grid(p1, p2, NULL))
+    #p1 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "seurat_clusters", label = TRUE, repel = TRUE, cols = ClusPallette)
+    #p2 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "DoubletFinder", pt.size=1.5, cols=c("red", "dodgerblue", "black"))
+    #print(plot_grid(p1, p2, NULL))
     dev.off()
     
     write.table(SeuratObject@meta.data,file=paste0("Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
@@ -245,11 +250,11 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     titleDF <- paste0(Sample)
     func.PlotTable.withRowNames.General(TableDF, FontsDF, titleDF, 15)
     
-    p1 <- DimPlot(SeuratObject, label = TRUE, label.size = 6, cols = ClusPallette)
-    p2 <- DimPlot(SeuratObject, label = TRUE, label.size = 5, group.by = "DoubletDecon")
-    p3 <- FeaturePlot(SeuratObject, features = "Ooep")
-    p4 <- FeaturePlot(SeuratObject, features = "Zp3")
-    print(plot_grid(p1, p2, p3, p4, ncol = 2))
+    #p1 <- DimPlot(SeuratObject, label = TRUE, label.size = 6, cols = ClusPallette)
+    #p2 <- DimPlot(SeuratObject, label = TRUE, label.size = 5, group.by = "DoubletDecon")
+    #p3 <- FeaturePlot(SeuratObject, features = "Ooep")
+    #p4 <- FeaturePlot(SeuratObject, features = "Zp3")
+    #print(plot_grid(p1, p2, p3, p4, ncol = 2))
     dev.off()
     
     
