@@ -11,14 +11,15 @@
 #' @param ClusPallette Color pallete to be used for clusters
 #' @param DoubletFinder Run DoubletFinder
 #' @param DoubletDecon Run DoubletDecon
-#' @keywords SeuratObject, saveDIR, Sample, FeatureUseCount, PCAnum, resClus, ClusPallette, DoubletFinder, DoubletDecon
+#' @param plotCCgene Plots TOP2A gene or not
+#' @keywords SeuratObject, saveDIR, Sample, FeatureUseCount, PCAnum, resClus, ClusPallette, DoubletFinder, DoubletDecon plotCCgene
 #' @export
 #' @examples
 #' Doublet_Detection_DF_DD()
 
 
 
-Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = TRUE){
+Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa", FeatureUseCount=2500, PCAnum=10, resClus = 0.5, ClusPallette=ClusPallette, DoubletFinder = TRUE, DoubletDecon = TRUE, plotCCgene = TRUE){
   
   #SeuratObject=TempSCdata
   #saveDIR=saveDIR
@@ -46,10 +47,16 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     if(Species=="hsa"){
       print("Counting MT % for Human")
       SeuratObject[["percent.mt"]] <- PercentageFeatureSet(SeuratObject, pattern = "^MT-")
+      SeuratObject[["percent.rb"]] <- PercentageFeatureSet(SeuratObject, pattern = "^RP[SL]")
+      
     } else {
       print("Counting MT % for Mouse")
       SeuratObject[["percent.mt"]] <- PercentageFeatureSet(SeuratObject, pattern = "^mt-")
+      SeuratObject[["percent.rb"]] <- PercentageFeatureSet(SeuratObject, pattern = "^Rp[sl]")
     }
+    
+    print("Finished Counting")
+    print(head(SeuratObject@meta.data))
     
     # Visualize QC metrics as a violin plot
     p1 <- VlnPlot(SeuratObject, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), cols = ClusPallette, pt.size = 0.00, ncol = 1)
@@ -108,6 +115,8 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     nExp_poi <- round(0.075*length(colnames(x = SeuratObject))); nExp_poi  ## Assuming 7.5% doublet formation rate - tailor for your dataset
     nExp_poi.adj <- round(nExp_poi*(1-homotypic.prop)); nExp_poi.adj
     
+    print("Finished Doublet Finder steps")
+    
     ## Run DoubletFinder with varying classification stringencies ----------------------------------------------------------------
     SeuratObject <- doubletFinder_v3(SeuratObject, PCs = 1:PCAnum, pN = 0.25, pK = 0.09, nExp = nExp_poi, reuse.pANN = FALSE, sct = FALSE)
     head(SeuratObject@meta.data)
@@ -136,7 +145,9 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     titleDF <- paste0(Sample,": Doublets Detected")
     func.PlotTable.General(TableDF, FontsDF, titleDF, 20)
     
-    Create_Table(SeuratObject, BeforeFilter=0)
+    print(Create_Table(SeuratObject, BeforeFilter=0))
+    
+    print("Plotted Table")
     
     
     p1 <- DimPlot(object = SeuratObject, reduction = "umap", group.by = "seurat_clusters", label = TRUE, repel = TRUE, cols = ClusPallette)
@@ -205,6 +216,7 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
                                min_uniq=4,
                                nCores=1)
     
+    print("Finished Doublet Decon steps")
     
     head(results$Final_doublets_groups); dim(results$Final_doublets_groups)
     
@@ -248,6 +260,8 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
   CompareAlgos="YES"
   if(CompareAlgos == "YES"){
     
+    print("Comparing Doublet Finder and Decon Algorithms")
+    
     #setwd(plotWD)
     setwd(DoubletFinderDir)
     DoubletfromFinder <- read.table(file = paste0("Discarded_Cells_",OutName,Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt")); head(DoubletfromFinder); dim(DoubletfromFinder)
@@ -266,6 +280,9 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     SeuratObject@meta.data[common,"DoubletDeconFinder"] <- "Doublet"
     write.table(SeuratObject@meta.data,file=paste0("Comparison_DoubletDeconFinder_Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
     
+    print("Completed Comparing Doublet Finder and Decon Algorithms")
+    
+    
     setwd(DDdir)
     pdf(file=paste0("Comparison_Plots_Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     
@@ -277,9 +294,24 @@ Doublet_Detection_DF_DD <- function(SeuratObject, saveDIR, Sample, Species="hsa"
     p3 <- DimPlot(SeuratObject, label.size = 6, group.by = "DoubletDeconFinder") + ggtitle(paste0("Doublet_Decon_and_Finder"))
     p4 <- FeaturePlot(SeuratObject, features = "Ooep")
     print(plot_grid(p1, p2, p3, p4, ncol = 2))
-    dev.off()
     
+  
+  
+  head(SeuratObject@meta.data)
+  cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); print(cutoff.df)
+  TableDF <- cutoff.df
+  FontsDF <- c(2.5,2.5,2.5)
+  titleDF <- paste0(Sample,": Doublets Detected")
+  func.PlotTable.General(TableDF, FontsDF, titleDF, 20)
+  
+  Create_Table(SeuratObject, BeforeFilter=0)
+  
+  dev.off()
+  
   }
+  
+  
+  
   
   print("Done")
   print(Sys.time())
