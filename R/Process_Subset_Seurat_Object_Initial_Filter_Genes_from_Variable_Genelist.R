@@ -14,7 +14,7 @@
 
 Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist <- function(Temp.object, FeatureNum=2500, Species="hsa", mt = TRUE, rb = TRUE, cc = FALSE){
   
-  #Temp.object=SCdata
+  #Temp.object=Temp.object
   #saveDIR=pkWD
   #Species="mmu"
   #FeatureNum=2500
@@ -41,7 +41,16 @@ Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist <- func
   }
   
   Temp.object <- NormalizeData(Temp.object) %>% FindVariableFeatures(nfeatures=FeatureNum)
-  Temp.object <- Filter_Genes_from_Variable_Genelist(Temp.object, Species = Species, mt = mt, rb = rb, cc = cc)
+  genes.filter.list <- Filter_Genes_from_Variable_Genelist(Temp.object, Species = Species, mt = mt, rb = rb, cc = cc)
+  
+  print(paste0("Variable genes length before filtering: ",length(Temp.object@assays$RNA@var.features)))
+  length(intersect(Temp.object@assays$RNA@var.features, genes.filter.list))
+  Temp.object@assays$RNA@var.features <- Temp.object@assays$RNA@var.features[!Temp.object@assays$RNA@var.features %in% genes.filter.list]
+  nrow(Temp.object@meta.data)
+  print(paste0("Variable genes length after filtering: ",length(Temp.object@assays$RNA@var.features)))
+  
+  print(paste0("Scaling now"))
+  Temp.object <- ScaleData(object = Temp.object) 
   
   return(Temp.object)
   
