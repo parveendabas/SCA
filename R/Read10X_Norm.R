@@ -57,6 +57,7 @@ Read10X_Norm <- function(matrix.DIR, saveDIR, Sample, Species="hsa", mincells=3,
     print("Valid options for species are Human or Mouse only")
     break
   }
+  
   print("Filtering Data based on specified filters")
   print(paste0("mtpercent:",mtpercent, ", rbpercent:",rbpercent))
   SCdata <- subset(SCdata, subset = percent.mt < mtpercent & percent.rb < rbpercent)
