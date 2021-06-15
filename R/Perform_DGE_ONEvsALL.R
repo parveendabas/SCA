@@ -202,8 +202,8 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, GroupColOrder, Species="h
       pdf(file=paste0("DEGs_Heatmap_",DgeNameInpdf,".pdf"),height = 14,width = 20)
       print(pheatmap(nor.exp[topFDR$gene,],annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
                      annotation_colors = ann_colors, cluster_rows = FALSE, cluster_cols = FALSE, main = paste0("Heatmap All markers, Max cells plotted per group:",downsampleHeatmap), fontsize = 13))
-      print(pheatmap(nor.exp[top$gene,],annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
-                     annotation_colors = ann_colors, cluster_rows = FALSE, cluster_cols = FALSE, main = paste0("Heatmap All markers, Max cells plotted per group:",downsampleHeatmap), fontsize = 13))
+      #print(pheatmap(nor.exp[top$gene,],annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
+      #               annotation_colors = ann_colors, cluster_rows = FALSE, cluster_cols = FALSE, main = paste0("Heatmap All markers, Max cells plotted per group:",downsampleHeatmap), fontsize = 13))
       #print(pheatmap(nor.exp,annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
       #               cluster_rows = FALSE, cluster_cols = FALSE, main = paste0("Heatmap All markers"), fontsize = 13))
       dev.off()

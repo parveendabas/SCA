@@ -47,6 +47,8 @@ Read10X_RemoveDoublets_Norm <- function(matrix.DIR, saveDIR, Sample, Doublet.DIR
   
   ## Remove Doublets
   print(Doublet.DIR); setwd(Doublet.DIR)
+  print("Reading following Doublet File")
+  print(paste0("Comparison_",DoubletAlgo,"_Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"))
   Doubletfile <- dir(path = Doublet.DIR, pattern = paste0("Comparison_",DoubletAlgo,"_Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"), full.names = T, recursive = F)
   DoubletsDetected <- read.table(file = Doubletfile, header = T, sep = "\t"); head(DoubletsDetected); dim(DoubletsDetected)
   
