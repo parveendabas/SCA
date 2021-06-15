@@ -43,6 +43,7 @@ Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist <- func
   Temp.object <- NormalizeData(Temp.object) %>% FindVariableFeatures(nfeatures=FeatureNum)
   Temp.object <- Filter_Genes_from_Variable_Genelist(Temp.object, Species = Species, mt = mt, rb = rb, cc = cc)
   
+  return(Temp.object)
   
   print("Done")
   print(Sys.time())
