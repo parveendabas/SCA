@@ -7,14 +7,13 @@
 Perform_DGE_ONEvsALL(
   Temp.object,
   saveDIR,
-  GroupColOrder,
-  Species = "hsa",
   SuffixName = "ALLcells",
-  GroupColPalette = Dark.Pallette,
-  GroupCol = "orig.ident",
-  ToUseCol = "seurat_clusters",
-  ToUseOrder = ClusOrder,
-  ToUsePallete = ClusPallette,
+  MainCol = "seurat_clusters",
+  MainColOrder = ClusOrder,
+  MainColPallete = ClusPallette,
+  ColNamesToPlot = ColNamesToPlot,
+  ColPaletteToPlot = ColPaletteToPlot,
+  Species = "hsa",
   FDR = 0.1,
   FCcutoff = 1.5,
   topnumber = 5,
@@ -28,21 +27,19 @@ Perform_DGE_ONEvsALL(
 
 \item{saveDIR}{Path to save generated data.}
 
-\item{GroupColOrder}{Factor order for Sample group column name}
-
-\item{Species}{Species Name. Valid options are hsa or mmu}
-
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
-\item{GroupColPalette}{Sample group color palette}
+\item{MainCol}{Column to be used (Default is seurat_cluster)}
 
-\item{GroupCol}{Sample group column name}
+\item{MainColOrder}{Factor order to be used (Default is numerical sorted order)}
 
-\item{ToUseCol}{Column to be used (Default is seurat_cluster)}
+\item{MainColPallete}{color palette to be used}
 
-\item{ToUseOrder}{Factor order to be used (Default is numerical sorted order)}
+\item{ColNamesToPlot}{Vector of identities to plot}
 
-\item{ToUsePallete}{color palette to be used}
+\item{ColPaletteToPlot}{list of color palettes to plot for the identities}
+
+\item{Species}{Species Name. Valid options are hsa or mmu}
 
 \item{FDR}{FDR cutoff}
 
@@ -62,17 +59,16 @@ This function allows you to perform differential gene analysis.
 \examples{
 Perform_DGE_ONEvsALL()
 }
-\keyword{,}
+\keyword{ColNamesToPlot,}
+\keyword{ColPaletteToPlot,}
 \keyword{FCcutoff,}
 \keyword{FDR,}
-\keyword{GroupCol,}
-\keyword{GroupColOrder}
-\keyword{GroupColPalette,}
+\keyword{MainCol,}
+\keyword{MainColOrder,}
+\keyword{MainColPallete,}
+\keyword{Species,}
 \keyword{SuffixName="ALLcells",}
 \keyword{Temp.object,}
-\keyword{ToUseCol=,}
-\keyword{ToUseOrder,}
-\keyword{ToUsePallete,}
 \keyword{downsampleHeatmap,}
 \keyword{plots,}
 \keyword{save}
