@@ -26,7 +26,7 @@
 Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells", 
                                  MainCol="seurat_clusters", MainColOrder=ClusOrder, MainColPallete=ClusPallette,
                                  ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot, Species="hsa", 
-                                 FDR = 0.1, FCcutoff = 1.5, topnumber = 5, downsampleHeatmap = 300, plots = TRUE, save = TRUE){
+                                 FDR = 0.1, FCcutoff = 1.5, topnumber = 5, downsampleHeatmap = 300, ClusOrder=ClusOrder, ClusPalette=ClusPalette, plots = TRUE, save = TRUE){
   
   #Temp.object <- SCdata
   #saveDIR <- pkWD
@@ -85,7 +85,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       head(meta.data.plot)
       print(dim(nor.exp))
       
-      Cluster.FULL <- MainColPallete[MainColOrder %in% unique(meta.data.plot[,"Cluster"])]; names(Cluster.FULL) <- MainColOrder[MainColOrder %in% unique(meta.data.plot[,"Cluster"])]; Cluster.FULL
+      Cluster.FULL <- ClusPalette[ClusOrder %in% unique(meta.data.plot[,"Cluster"])]; names(Cluster.FULL) <- ClusOrder[ClusOrder %in% unique(meta.data.plot[,"Cluster"])]; Cluster.FULL
       Group1.FULL <- ColPaletteToPlot[[2]][1:length(unique(meta.data.plot[,"Group1"]))]; names(Group1.FULL) <- sort(unique(meta.data.plot[,"Group1"])); Group1.FULL
       
       if(length(ColNamesToPlot)>2){ Group2.FULL <- ColPaletteToPlot[[3]][1:length(unique(meta.data.plot[,"Group2"]))]; names(Group2.FULL) <- sort(unique(meta.data.plot[,"Group2"])); Group2.FULL 

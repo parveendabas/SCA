@@ -18,6 +18,8 @@ Perform_DGE_ONEvsALL(
   FCcutoff = 1.5,
   topnumber = 5,
   downsampleHeatmap = 300,
+  ClusOrder = ClusOrder,
+  ClusPalette = ClusPalette,
   plots = TRUE,
   save = TRUE
 )
