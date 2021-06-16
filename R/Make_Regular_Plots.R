@@ -47,8 +47,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
       ident1Palette=ColPaletteToPlot[[i]]
       print(paste0("ident1 for Histogram plotting is: ",ident1, " (",i,")"))
       
-      z=i+1
-      for(j in z:length(ColNamesToPlot)){
+      for(j in (1:length(ColNamesToPlot))[!1:length(ColNamesToPlot) %in% i]){
         #j=2
         ident2=ColNamesToPlot[j]
         ident2Palette=ColPaletteToPlot[j]
