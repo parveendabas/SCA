@@ -119,8 +119,8 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
         )}
       
       
-      colors <- c(seq(-2,4,by=0.01),max(nor.exp))
-      my_palette <- c(colorRampPalette(colors = c("#a7c5f2", "#e6f0f5", "gray97", "darksalmon", "orangered3", "darkred")) (n = length(colors)-3), "firebrick4")
+      colors <- c(seq(-2,2,by=0.01))
+      my_palette <- c(colorRampPalette(colors = c("darkblue", "#a7c5f2", "#e6f0f5", "gray97", "darksalmon", "orangered3", "darkred")) (n = length(colors)))
       
       pdf(file=paste0("DEGs_Heatmap_",DgeNameInpdf,".pdf"),height = 14,width = 20)
       print(DotPlot(Temp.object, features = (topFDR$gene), cols= c("gray80", "red"))  + 
