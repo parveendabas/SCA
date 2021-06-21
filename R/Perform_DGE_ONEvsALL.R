@@ -68,7 +68,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       topFDR <- markers %>% dplyr::arrange(p_val_adj, desc(avg_log2FC)) %>% dplyr::group_by(cluster) %>% dplyr::slice(1:topnumber); topFDR <- topFDR[!duplicated(topFDR$gene),]; dim(topFDR);
       write.table(markers, file = paste0("DEGs_Heatmap_",DgeNameInpdf,".txt"),quote=F,sep="\t")
       SCdata.temp.Heatmap <- subset(Temp.object, downsample=downsampleHeatmap)
-      SCdata.temp.Heatmap <- ScaleData(object = SCdata.temp.Heatmap, verbose = FALSE, features = markers$gene)
+      SCdata.temp.Heatmap <- ScaleData(object = SCdata.temp.Heatmap, verbose = FALSE, features = markers$gene, scale.max = 2)
       dtype="scale.data"
       nor.exp <- GetAssayData(object = SCdata.temp.Heatmap, slot = dtype); print(dim(nor.exp))
       UseGenes <- intersect(markers$gene, rownames(nor.exp)); length(UseGenes)
