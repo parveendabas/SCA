@@ -3,13 +3,14 @@
 #' This function allows you to perform differential gene analysis.
 #' @param Temp.object Seurat objects to be used for the QC plots.
 #' @param saveDIR Directory to save the plots.
-#' @param IdentToBatchCorrect Identity to be used for Harmony batch correction (Max 1)
+#' @param IdentToBatchCorrect Identity to be used for Harmony batch correction
 #' @param SuffixName Suffix. to be added in the directory name as 
-#' @param ColNamesToPlot Vector of identities to plot (Max = 3)
-#' @param ColPaletteToPlot list of color palettes to plot for the identities (Max = 3)
+#' @param ColToPlot Mention one ident only
+#' @param ColPaletteToPlot Mention one palette only for the ident
 #' @param mingenes minimum gene number that will be mentioned in the output file name
+#' @param PCAuse PCA dim to use
 #' @param ClusResList Vector of the PCAs to be used for testing
-#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, SuffixName, ColNamesToPlot, ColPaletteToPlot mingenes PCAdimList
+#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, SuffixName, ColToPlot, ColPaletteToPlot mingenes PCAuse ClusResList
 #' @export
 #' @examples
 #' Test_Cluster_Resolution_Harmony()
@@ -17,14 +18,14 @@
 
 
 Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", SuffixName="Testing_Cluster_Resolution",  
-                                 ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500,
+                                 ColToPlot=ColToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500, PCAuse=25,
                                  ClusResList=c(0.1, 0.15, 0.2, 0.3), ClusOrder = ClusOrderFrom1){
   
   
   #Temp.object=SCdata
   #saveDIR=pkWD
   #SuffixName=paste0("Testing_Cluster_Resolution")
-  #ColNamesToPlot="DietStrain"
+  #ColToPlot="DietStrain"
   #ColPaletteToPlot=Dark.Pallette
   #IdentToBatchCorrect="orig.ident"
   #ClusResList=c(0.1, 0.15, 0.2, 0.3)
@@ -36,7 +37,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   print(paste0(ClusResList))
   
   setwd(saveDIR) 
-  for(PCAdim in c(25)){
+  for(PCAdim in PCAuse){
     
     #PCAdim=25
     
@@ -63,7 +64,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       # Projecting singlet identities on TSNE visualization
       #DimPlot(Temp.object, group.by = "HTO_classification")
       p1[[as.character(resUse)]] <- DimPlot(Temp.object, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPalette, label = T, label.size = 8) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
-      Idents(Temp.object) <- ColNamesToPlot
+      Idents(Temp.object) <- ColToPlot
       #Idents(Temp.object) <- factor(Idents(Temp.object), levels = GroupOrder)
       q1[[as.character(resUse)]] <- DimPlot(Temp.object, pt.size = 0.5, reduction = "umap", cols = ColPaletteToPlot, label = F, label.size = 7) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
       #DimPlot(Temp.object, group.by = "LinDay", cols = NeuronPalette, pt.size = 1, reduction = "tsne")

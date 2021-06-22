@@ -9,9 +9,10 @@ Test_Cluster_Resolution_Harmony(
   saveDIR,
   IdentToBatchCorrect = "orig.ident",
   SuffixName = "Testing_Cluster_Resolution",
-  ColNamesToPlot = ColNamesToPlot,
+  ColToPlot = ColToPlot,
   ColPaletteToPlot = ColPaletteToPlot,
   mingenes = 500,
+  PCAuse = 25,
   ClusResList = c(0.1, 0.15, 0.2, 0.3),
   ClusOrder = ClusOrderFrom1
 )
@@ -21,15 +22,17 @@ Test_Cluster_Resolution_Harmony(
 
 \item{saveDIR}{Directory to save the plots.}
 
-\item{IdentToBatchCorrect}{Identity to be used for Harmony batch correction (Max 1)}
+\item{IdentToBatchCorrect}{Identity to be used for Harmony batch correction}
 
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
-\item{ColNamesToPlot}{Vector of identities to plot (Max = 3)}
+\item{ColToPlot}{Mention one ident only}
 
-\item{ColPaletteToPlot}{list of color palettes to plot for the identities (Max = 3)}
+\item{ColPaletteToPlot}{Mention one palette only for the ident}
 
 \item{mingenes}{minimum gene number that will be mentioned in the output file name}
+
+\item{PCAuse}{PCA dim to use}
 
 \item{ClusResList}{Vector of the PCAs to be used for testing}
 }
@@ -39,10 +42,11 @@ This function allows you to perform differential gene analysis.
 \examples{
 Test_Cluster_Resolution_Harmony()
 }
-\keyword{ColNamesToPlot,}
+\keyword{ClusResList}
 \keyword{ColPaletteToPlot}
+\keyword{ColToPlot,}
 \keyword{IdentToBatchCorrect,}
-\keyword{PCAdimList}
+\keyword{PCAuse}
 \keyword{SuffixName,}
 \keyword{Temp.object,}
 \keyword{mingenes}
