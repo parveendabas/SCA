@@ -80,7 +80,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       #meta.data.plot <- meta.data.plot[order(factor(meta.data.plot[,MainCol], levels = MainColOrder[MainColOrder %in% unique(Temp.object@meta.data[,MainCol])]), factor(meta.data.plot[,ColNamesToPlot[2]], levels = sort(unique(meta.data.plot[,ColNamesToPlot[2]])))),]; head(meta.data.plot)
       meta.data.plot <- meta.data.plot[order(factor(meta.data.plot[,MainCol], levels = MainColOrder[MainColOrder %in% unique(Temp.object@meta.data[,MainCol])])),]; head(meta.data.plot)
       nor.exp <- nor.exp[,rownames(meta.data.plot), drop=FALSE]
-      Group.list <- c("Group1", "Group2", "Group3", "Group4", "Group5")
+      Group.list <- c("Group1", "Group2", "Group3", "Group4", "Group5", "Group6", "Group7")
       colnames(meta.data.plot) <- c("Cluster", Group.list[1:(length(ColNamesToPlot)-1)])
       head(meta.data.plot)
       print(dim(nor.exp))
@@ -117,6 +117,33 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
         Group3 = Group3.FULL[names(Group3.FULL) %in% as.character(unique(meta.data.plot$Group3))],
         Group4 = Group4.FULL[names(Group4.FULL) %in% as.character(unique(meta.data.plot$Group4))]
         )}
+      
+      
+      if(length(ColNamesToPlot)>5){ Group5.FULL <- ColPaletteToPlot[[6]][1:length(unique(meta.data.plot[,"Group5"]))]; names(Group5.FULL) <- sort(unique(meta.data.plot[,"Group5"])); Group5.FULL 
+      ann_colors = list(
+        Cluster = Cluster.FULL[names(Cluster.FULL) %in% as.character(unique(meta.data.plot$Cluster))],
+        #CT = CT.FULL[names(CT.FULL) %in% as.character(unique(meta.data.plot$CT))],
+        #Project = Project.FULL[names(Project.FULL) %in% as.character(unique(meta.data.plot$Project))],
+        Group1 = Group1.FULL[names(Group1.FULL) %in% as.character(unique(meta.data.plot$Group1))],
+        Group2 = Group2.FULL[names(Group2.FULL) %in% as.character(unique(meta.data.plot$Group2))],
+        Group3 = Group3.FULL[names(Group3.FULL) %in% as.character(unique(meta.data.plot$Group3))],
+        Group4 = Group4.FULL[names(Group4.FULL) %in% as.character(unique(meta.data.plot$Group4))],
+        Group5 = Group5.FULL[names(Group5.FULL) %in% as.character(unique(meta.data.plot$Group5))]
+      )}
+      
+      if(length(ColNamesToPlot)>6){ Group6.FULL <- ColPaletteToPlot[[7]][1:length(unique(meta.data.plot[,"Group6"]))]; names(Group6.FULL) <- sort(unique(meta.data.plot[,"Group6"])); Group6.FULL 
+      ann_colors = list(
+        Cluster = Cluster.FULL[names(Cluster.FULL) %in% as.character(unique(meta.data.plot$Cluster))],
+        #CT = CT.FULL[names(CT.FULL) %in% as.character(unique(meta.data.plot$CT))],
+        #Project = Project.FULL[names(Project.FULL) %in% as.character(unique(meta.data.plot$Project))],
+        Group1 = Group1.FULL[names(Group1.FULL) %in% as.character(unique(meta.data.plot$Group1))],
+        Group2 = Group2.FULL[names(Group2.FULL) %in% as.character(unique(meta.data.plot$Group2))],
+        Group3 = Group3.FULL[names(Group3.FULL) %in% as.character(unique(meta.data.plot$Group3))],
+        Group4 = Group4.FULL[names(Group4.FULL) %in% as.character(unique(meta.data.plot$Group4))],
+        Group5 = Group5.FULL[names(Group5.FULL) %in% as.character(unique(meta.data.plot$Group5))],
+        Group6 = Group6.FULL[names(Group6.FULL) %in% as.character(unique(meta.data.plot$Group6))]
+      )}
+      
       
       
       colors <- c(seq(-2,2,by=0.01))
