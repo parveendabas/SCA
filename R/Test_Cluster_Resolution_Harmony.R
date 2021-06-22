@@ -45,9 +45,8 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
     
-    p1=q1=list()
-    
     pdf(file=paste0("Cluster_Resolution_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,".pdf"),height = 14,width = 28)
+    p1 = list()
     for(resUse in ClusResList){
       #resUse=0.1
       print(paste0("Processing res:",resUse))
@@ -64,18 +63,17 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       # Projecting singlet identities on TSNE visualization
       #DimPlot(Temp.object, group.by = "HTO_classification")
       p1[[as.character(resUse)]] <- DimPlot(Temp.object, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPalette, label = T, label.size = 8) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
-      Idents(Temp.object) <- ColToPlot
-      #Idents(Temp.object) <- factor(Idents(Temp.object), levels = GroupOrder)
-      q1[[as.character(resUse)]] <- DimPlot(Temp.object, pt.size = 0.5, reduction = "umap", cols = ColPaletteToPlot, label = F, label.size = 7) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
-      #DimPlot(Temp.object, group.by = "LinDay", cols = NeuronPalette, pt.size = 1, reduction = "tsne")
+      
       
     }
     
-    TopPanel <- plot_grid(plotlist = p1, ncol = length(ClusResList))
-    BottomPanel <- plot_grid(plotlist = q1, ncol = length(ClusResList))
-    print(plot_grid(TopPanel, BottomPanel, nrow = 2))
-    #print(plot_grid(p1[["0.1"]], p1[["0.2"]], p1[["0.3"]], p1[["0.4"]], p1[["0.5"]], q1[["0.1"]], q1[["0.2"]], q1[["0.3"]], q1[["0.4"]], q1[["0.5"]], nrow = 2))
+    Idents(Temp.object) <- ColToPlot
+    q1 <- DimPlot(Temp.object, pt.size = 0.5, reduction = "umap", cols = ColPaletteToPlot, 
+                  label = F, label.size = 7) + ggtitle(paste0("PCA:", PCAdim))
     
+    TopPanel <- plot_grid(plotlist = p1, ncol = length(ClusResList))
+    BottomPanel <- plot_grid(q1, ncol = length(ClusResList))
+    print(plot_grid(TopPanel, BottomPanel, nrow = 2))
     dev.off()
   }
   
