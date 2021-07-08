@@ -34,7 +34,7 @@ Test_PCA_dim_Harmony(
 \item{PCAdimList}{Vector of the PCAs to be used for testing}
 }
 \description{
-This function allows you to perform differential gene analysis.
+This function  allows you to compare different no. of PCAs for Harmony. Cluster Resolution is set to 0.1.
 }
 \examples{
 Test_PCA_dim_Harmony()

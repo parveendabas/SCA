@@ -41,7 +41,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
   if(HistogramPlot=="YES"){
     
     pdf(file=paste0("Histogram_Plots_",SuffixName,".pdf"),height = 10,width = 12)
-    for(i in 1:(length(ColNamesToPlot)-1)){
+    for(i in 1:(length(ColNamesToPlot))){
       #i=1
       ident1=ColNamesToPlot[i]
       ident1Palette=ColPaletteToPlot[[i]]
@@ -51,7 +51,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
         #j=2
         ident2=ColNamesToPlot[j]
         ident2Palette=ColPaletteToPlot[j]
-        print(paste0("ident2 for plotting is: ",ident2, " (",j,")"))
+        print(paste0("    ident2 for plotting is: ",ident2, " (",j,")"))
         
     setwd(plotWD)
     print(paste0("Plotting Histogram Plot"))
@@ -84,6 +84,35 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
       #Bracket i
     }
     dev.off()
+  }
+  
+  
+  TablePlot="YES"
+  if(TablePlot=="YES"){
+    
+    pdf(file=paste0("Tables_",SuffixName,".pdf"),height = 8,width = 16)
+    for(i in 1:(length(ColNamesToPlot))){
+      #i=1
+      ident1=ColNamesToPlot[i]
+      ident1Palette=ColPaletteToPlot[[i]]
+      print(paste0("ident1 for Table plotting is: ",ident1, " (",i,")"))
+      
+      PlotTable.withRowNames.OneValue(Temp.object, ident1, ident1, 15, 2, 2.5, 2.5)
+      
+      #z=i+1
+      #for(j in z:length(ColNamesToPlot)){
+      for(j in (1:length(ColNamesToPlot))[!1:length(ColNamesToPlot) %in% i]){
+        #j=2
+        ident2=ColNamesToPlot[j]
+        ident2Palette=ColPaletteToPlot[j]
+        print(paste0("     ident2 for plotting is: ",ident2, " (",j,")"))
+        
+        PlotTable.withRowNames.TwoValues(Temp.object, ident1, ident2, paste0(ident1," vs ",ident2), 15, 1.7, 2, 2)
+        
+      }
+      
+    }
+    dev.off()  
   }
   
   
@@ -135,12 +164,12 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
       print(paste0("Plotting cell cycle gene TOP2A for ",Species))
       QCcols.list[["CC"]] <- FeaturePlot(Temp.object, features = "TOP2A") +
         scale_colour_viridis_c(option = "viridis", direction = -1) +
-        ggtitle(paste0("Cell Cycle Gene"))
+        ggtitle(paste0("Cell Cycle Gene: TOP2A"))
     } else {
       print(paste0("Plotting cell cycle gene Top2a for ",Species))
       QCcols.list[["CC"]] <- FeaturePlot(Temp.object, features = "Top2a") +
         scale_colour_viridis_c(option = "viridis", direction = -1) +
-        ggtitle(paste0("Cell Cycle Gene"))
+        ggtitle(paste0("Cell Cycle Gene: Top2a"))
     }
     
     Idents(Temp.object) <- "seurat_clusters"
@@ -154,32 +183,6 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
   
   
   
-  TablePlot="YES"
-  if(TablePlot=="YES"){
-    
-    pdf(file=paste0("Tables_",SuffixName,".pdf"),height = 8,width = 16)
-    for(i in 1:(length(ColNamesToPlot)-1)){
-      #i=1
-      ident1=ColNamesToPlot[i]
-      ident1Palette=ColPaletteToPlot[[i]]
-      print(paste0("ident1 for Table plotting is: ",ident1, " (",i,")"))
-      
-      PlotTable.withRowNames.OneValue(Temp.object, ident1, ident1, 15, 2, 2.5, 2.5)
-      
-      z=i+1
-      for(j in z:length(ColNamesToPlot)){
-        #j=2
-        ident2=ColNamesToPlot[j]
-        ident2Palette=ColPaletteToPlot[j]
-        print(paste0("ident2 for plotting is: ",ident2, " (",j,")"))
-        
-        PlotTable.withRowNames.TwoValues(Temp.object, ident1, ident2, paste0(ident1," vs ",ident2), 15, 1.7, 2, 2)
-    
-      }
-      
-    }
-  dev.off()  
-  }
   
   
   

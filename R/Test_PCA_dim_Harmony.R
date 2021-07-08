@@ -1,6 +1,6 @@
 #' A Test_PCA_dim_Harmony Function
 #'
-#' This function allows you to perform differential gene analysis.
+#' This function  allows you to compare different no. of PCAs for Harmony. Cluster Resolution is set to 0.1.
 #' @param Temp.object Seurat objects to be used for the QC plots.
 #' @param saveDIR Directory to save the plots.
 #' @param IdentToBatchCorrect Identity to be used for Harmony batch correction (Max 1)

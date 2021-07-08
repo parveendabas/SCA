@@ -1,18 +1,18 @@
-#' A Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist Function
+#' A Process_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist Function
 #'
-#' This function allows you to filter genes for mt, ribosomal and cell cycle list.
+#' This function performs a) mt, ribo % calculation, b) Normalization c) Filtering from variable genes d) Scaling of the data
 #' @param Temp.object Seurat Object
-#' @param number of Features for variable genes
+#' @param FeatureNum number of Features for variable genes
 #' @param Species Species Name. Valid options are hsa or mmu
-#' @param mt mitochondrial genes (MOUSE) to be removed from Seurat object 
-#' @param rb ribosomal genes (MOUSE) to be removed from Seurat object 
-#' @param cc CellCycle genes (Converted from Human to Mouse) to be removed from Seurat object 
+#' @param mt mitochondrial genes to be removed from Seurat object 
+#' @param rb ribosomal genes to be removed from Seurat object 
+#' @param cc CellCycle genes (Converted from Human to Mouse in needed) to be removed from Seurat object 
 #' @keywords Temp.object, mt, rb, cc
 #' @export
 #' @examples
-#' Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist()
+#' Process_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist()
 
-Process_Subset_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist <- function(Temp.object, FeatureNum=2500, Species="hsa", mt = TRUE, rb = TRUE, cc = FALSE){
+Process_Seurat_Object_Initial_Filter_Genes_from_Variable_Genelist <- function(Temp.object, FeatureNum=2500, Species="hsa", mt = TRUE, rb = TRUE, cc = FALSE){
   
   #Temp.object=Temp.object
   #saveDIR=pkWD
