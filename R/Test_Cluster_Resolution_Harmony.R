@@ -1,23 +1,24 @@
 #' A Test_Cluster_Resolution_Harmony Function
 #'
-#' This function allows you to perform differential gene analysis.
+#' This function allows you to compare different cluster resolutions.
 #' @param Temp.object Seurat objects to be used for the QC plots.
 #' @param saveDIR Directory to save the plots.
 #' @param IdentToBatchCorrect Identity to be used for Harmony batch correction
+#' @param ThetaToBatchCorrect Theta values to be used while running harmony. Diversity clustering penalty parameter. Specify for each variable in group.by.vars. Default theta=2. theta=0 does not encourage any diversity. Larger values of theta result in more diverse clusters.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param ColToPlot Mention one ident only
 #' @param ColPaletteToPlot Mention one palette only for the ident
 #' @param mingenes minimum gene number that will be mentioned in the output file name
 #' @param PCAuse PCA dim to use
 #' @param ClusResList Vector of the PCAs to be used for testing
-#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, SuffixName, ColToPlot, ColPaletteToPlot mingenes PCAuse ClusResList
+#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, ThetaToBatchCorrect, SuffixName, ColToPlot, ColPaletteToPlot mingenes PCAuse ClusResList
 #' @export
 #' @examples
 #' Test_Cluster_Resolution_Harmony()
 
 
 
-Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", SuffixName="Testing_Cluster_Resolution",  
+Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_Cluster_Resolution",  
                                  ColToPlot=ColToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500, PCAuse=25,
                                  ClusResList=c(0.1, 0.15, 0.2, 0.3), ClusOrder = ClusOrderFrom1){
   
@@ -42,7 +43,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     #PCAdim=25
     
     Temp.object <- RunPCA(object = Temp.object, npcs = PCAdim, verbose = FALSE)
-    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect)
+    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect, dims.use=PCAdim)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
     
     pdf(file=paste0("Cluster_Resolution_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,".pdf"),height = 14,width = 28)

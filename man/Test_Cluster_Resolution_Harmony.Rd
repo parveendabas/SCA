@@ -8,6 +8,7 @@ Test_Cluster_Resolution_Harmony(
   Temp.object,
   saveDIR,
   IdentToBatchCorrect = "orig.ident",
+  ThetaToBatchCorrect = 2,
   SuffixName = "Testing_Cluster_Resolution",
   ColToPlot = ColToPlot,
   ColPaletteToPlot = ColPaletteToPlot,
@@ -24,6 +25,8 @@ Test_Cluster_Resolution_Harmony(
 
 \item{IdentToBatchCorrect}{Identity to be used for Harmony batch correction}
 
+\item{ThetaToBatchCorrect}{Theta values to be used while running harmony. Diversity clustering penalty parameter. Specify for each variable in group.by.vars. Default theta=2. theta=0 does not encourage any diversity. Larger values of theta result in more diverse clusters.}
+
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
 \item{ColToPlot}{Mention one ident only}
@@ -37,7 +40,7 @@ Test_Cluster_Resolution_Harmony(
 \item{ClusResList}{Vector of the PCAs to be used for testing}
 }
 \description{
-This function allows you to perform differential gene analysis.
+This function allows you to compare different cluster resolutions.
 }
 \examples{
 Test_Cluster_Resolution_Harmony()
@@ -49,5 +52,6 @@ Test_Cluster_Resolution_Harmony()
 \keyword{PCAuse}
 \keyword{SuffixName,}
 \keyword{Temp.object,}
+\keyword{ThetaToBatchCorrect,}
 \keyword{mingenes}
 \keyword{saveDIR,}

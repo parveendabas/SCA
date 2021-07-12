@@ -4,19 +4,20 @@
 #' @param Temp.object Seurat objects to be used for the QC plots.
 #' @param saveDIR Directory to save the plots.
 #' @param IdentToBatchCorrect Identity to be used for Harmony batch correction (Max 1)
+#' @param ThetaToBatchCorrect Theta values to be used while running harmony. Diversity clustering penalty parameter. Specify for each variable in group.by.vars. Default theta=2. theta=0 does not encourage any diversity. Larger values of theta result in more diverse clusters.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param ColNamesToPlot Vector of identities to plot (Max = 3)
 #' @param ColPaletteToPlot list of color palettes to plot for the identities (Max = 3)
 #' @param mingenes minimum gene number that will be mentioned in the output file name
 #' @param PCAdimList Vector of the PCAs to be used for testing
-#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, SuffixName, ColNamesToPlot, ColPaletteToPlot mingenes PCAdimList
+#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, ThetaToBatchCorrect, SuffixName, ColNamesToPlot, ColPaletteToPlot mingenes PCAdimList
 #' @export
 #' @examples
 #' Test_PCA_dim_Harmony()
 
 
 
-Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", SuffixName="Testing_PCA_Dim",  
+Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_PCA_Dim",  
                                ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500,
                                PCAdimList=c(20, 25, 30, 40, 50), ClusOrder = ClusOrderFrom1){
   
@@ -27,6 +28,9 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
   #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain")
   #ColPaletteToPlot=list(ClusPalette, Light.Pallette, Dark.Pallette)
   #IdentToBatchCorrect="orig.ident"
+  
+  print(paste0("Covariates being used:",IdentToBatchCorrect))
+  print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
   
   ClusOrder <- ClusOrderFrom1
   
@@ -48,7 +52,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
       print(paste0("Processing PCA:",PCAdim))
       
       Temp.object <- RunPCA(object = Temp.object, npcs = PCAdim, verbose = FALSE)
-      Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect)
+      Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect, dims.use=PCAdim)
       Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindClusters(Temp.object, resolution=resPlot)

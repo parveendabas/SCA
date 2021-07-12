@@ -8,6 +8,7 @@ Test_PCA_dim_Harmony(
   Temp.object,
   saveDIR,
   IdentToBatchCorrect = "orig.ident",
+  ThetaToBatchCorrect = 2,
   SuffixName = "Testing_PCA_Dim",
   ColNamesToPlot = ColNamesToPlot,
   ColPaletteToPlot = ColPaletteToPlot,
@@ -22,6 +23,8 @@ Test_PCA_dim_Harmony(
 \item{saveDIR}{Directory to save the plots.}
 
 \item{IdentToBatchCorrect}{Identity to be used for Harmony batch correction (Max 1)}
+
+\item{ThetaToBatchCorrect}{Theta values to be used while running harmony. Diversity clustering penalty parameter. Specify for each variable in group.by.vars. Default theta=2. theta=0 does not encourage any diversity. Larger values of theta result in more diverse clusters.}
 
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
@@ -45,5 +48,6 @@ Test_PCA_dim_Harmony()
 \keyword{PCAdimList}
 \keyword{SuffixName,}
 \keyword{Temp.object,}
+\keyword{ThetaToBatchCorrect,}
 \keyword{mingenes}
 \keyword{saveDIR,}
