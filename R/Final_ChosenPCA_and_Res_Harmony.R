@@ -4,23 +4,27 @@
 #' @param Temp.object Seurat objects to be used for the QC plots.
 #' @param saveDIR Directory to save the plots.
 #' @param IdentToBatchCorrect Identity to be used for Harmony batch correction (Max 1)
+#' @param ThetaToBatchCorrect Theta values to be used while running harmony. Diversity clustering penalty parameter. Specify for each variable in group.by.vars. Default theta=2. theta=0 does not encourage any diversity. Larger values of theta result in more diverse clusters.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param ChosenPCA ChosenPCA
 #' @param ChosenRes ChosenRes
 #' @param ColNamesToPlot Vector of identities to plot (Max = 3)
 #' @param ColPaletteToPlot list of color palettes to plot for the identities (Max = 3)
 #' @param mingenes minimum gene number that will be mentioned in the output file name
-#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, SuffixName, ChosenPCA, ChosenRes, ColNamesToPlot, ColPaletteToPlot mingenes
+#' @keywords Temp.object, saveDIR, IdentToBatchCorrect, ThetaToBatchCorrect, SuffixName, ChosenPCA, ChosenRes, ColNamesToPlot, ColPaletteToPlot mingenes
 #' @export
 #' @examples
 #' Final_ChosenPCA_and_Res_Harmony()
 
 
 
-Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", SuffixName="Testing_PCA_Dim", 
+Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_PCA_Dim", 
                                          ChosenPCA=25, ChosenRes=0.1,
                                ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500,
                                ClusOrder = ClusOrderFrom1){
+  
+  print(paste0("Covariates being used:",IdentToBatchCorrect))
+  print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
   
   
   #Temp.object=SCdata
@@ -40,9 +44,10 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   print(paste0("Chosen PCA is: ",ChosenPCA))
   print(paste0("Chosen Cluster Resolution is: ",ChosenRes))
   
+  
     # We select the top 10 PCs for clustering and tSNE based on PCElbowPlot
     Temp.object <- RunPCA(object = Temp.object, npcs = ChosenPCA, verbose = FALSE)
-    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect)
+    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:ChosenPCA)
     
     Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:ChosenPCA)

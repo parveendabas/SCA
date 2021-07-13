@@ -52,7 +52,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
       print(paste0("Processing PCA:",PCAdim))
       
       Temp.object <- RunPCA(object = Temp.object, npcs = PCAdim, verbose = FALSE)
-      Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect, dims.use=PCAdim)
+      Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
       Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindClusters(Temp.object, resolution=resPlot)

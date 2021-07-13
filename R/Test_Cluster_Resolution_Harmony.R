@@ -23,6 +23,11 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
                                  ClusResList=c(0.1, 0.15, 0.2, 0.3), ClusOrder = ClusOrderFrom1){
   
   
+  print(paste0("Covariates being used:",IdentToBatchCorrect))
+  print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
+  print(paste0("PCA being used :",PCAuse))
+  
+  
   #Temp.object=SCdata
   #saveDIR=pkWD
   #SuffixName=paste0("Testing_Cluster_Resolution")
@@ -43,10 +48,10 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     #PCAdim=25
     
     Temp.object <- RunPCA(object = Temp.object, npcs = PCAdim, verbose = FALSE)
-    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect, dims.use=PCAdim)
+    Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
     
-    pdf(file=paste0("Cluster_Resolution_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,".pdf"),height = 14,width = 28)
+    pdf(file=paste0("Cluster_Resolution_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,"_PCs",PCAuse,".pdf"),height = 14,width = 28)
     p1 = list()
     for(resUse in ClusResList){
       #resUse=0.1
