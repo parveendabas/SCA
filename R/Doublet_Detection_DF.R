@@ -38,7 +38,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   if(RUNProcessData == "YES"){
     
     setwd(DDdir)
-    pdf(file=paste0("PreProcess_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
+    pdf(file=paste0("PreProcess_DoubletFinder_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     print(paste0("Loading Seurat object for: ",Sample))
     
     ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ Doublet_Detection_DF <- function(SeuratObject, saveDIR, Sample, Species="hsa", F
   print("Doing Final Plotting")
   
   setwd(DDdir)
-  pdf(file = paste0("Comparison_Plots_Doublets_Detected_", 
+  pdf(file = paste0("Comparison_DoubletFinder_Plots_Doublets_Detected_", 
                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
                     ".pdf"), height = 10, width = 12)
   table(SeuratObject@meta.data$DoubletfromFinder)

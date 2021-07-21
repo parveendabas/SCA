@@ -34,7 +34,7 @@ Doublet_Detection_SCDShybrid(
 
 \item{ClusPallette}{Color pallete to be used for clusters}
 
-\item{SCDShybrid}{Run SCDS hybrid Doublet Detection Algorithm}
+\item{SCDShybrid}{Run SCDShybrid Doublet Detection Algorithm}
 
 \item{plotCCgene}{Plots TOP2A gene or not}
 }
@@ -47,7 +47,7 @@ Doublet_Detection_SCDShybrid()
 \keyword{ClusPallette,}
 \keyword{FeatureUseCount,}
 \keyword{PCAnum,}
-\keyword{SCDS}
+\keyword{SCDShybrid}
 \keyword{Sample,}
 \keyword{SeuratObject,}
 \keyword{Species,}

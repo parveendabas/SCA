@@ -9,9 +9,9 @@
 #' @param PCAnum Number of PCs to be used
 #' @param resClus Resolution to be used for clustering
 #' @param ClusPallette Color pallete to be used for clusters
-#' @param SCDShybrid Run SCDS hybrid Doublet Detection Algorithm
+#' @param SCDShybrid Run SCDShybrid Doublet Detection Algorithm
 #' @param plotCCgene Plots TOP2A gene or not
-#' @keywords SeuratObject, saveDIR, Sample, Species, FeatureUseCount, PCAnum, resClus, ClusPallette, SCDS plotCCgene
+#' @keywords SeuratObject, saveDIR, Sample, Species, FeatureUseCount, PCAnum, resClus, ClusPallette, SCDShybrid plotCCgene
 #' @export
 #' @examples
 #' Doublet_Detection_SCDShybrid()
@@ -51,7 +51,7 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
   if(RUNProcessData == "YES"){
     
     setwd(DDdir)
-    pdf(file=paste0("PreProcess_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
+    pdf(file=paste0("PreProcess_SCDShybrid_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     print(paste0("Loading Seurat object for: ",Sample))
     
     ## Pre-process Seurat object (standard) --------------------------------------------------------------------------------------
@@ -112,16 +112,16 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
   }
   
   
-  if (SCDS == TRUE) {
+  if (SCDShybrid == TRUE) {
     
     setwd(DDdir)
-    SCDSDir <- paste(getwd(),paste0("SCDS_",Sample),sep="/"); print(SCDSDir)
-    dir.create(file.path(getwd(),paste0("SCDS_",Sample)), showWarnings = FALSE)
+    SCDSDir <- paste(getwd(),paste0("SCDShybrid_",Sample),sep="/"); print(SCDSDir)
+    dir.create(file.path(getwd(),paste0("SCDShybrid_",Sample)), showWarnings = FALSE)
     
     setwd(SCDSDir)
-    pdf(file=paste0("Plots_SCDS_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
+    pdf(file=paste0("Plots_SCDShybrid_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     
-    print(paste0("Started SCDS process for ",Sample, " using PCA ",PCAnum))
+    print(paste0("Started SCDShybrid process for ",Sample, " using PCA ",PCAnum))
     
     sce <- as.SingleCellExperiment(SeuratObject, assay = "RNA")
     sce = cxds(sce,retRes = TRUE)
@@ -139,26 +139,26 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
     #boxplot(sce$hybrid_score ~ sce$hybrid_call, main="hybrid")
     
     doublet_cutoff <- median(sce$hybrid_score) + 2*(sd(sce$hybrid_score))
-    CD$DoubletSCDShybrid <- "Singlet"
-    CD[CD$hybrid_score > doublet_cutoff, "DoubletSCDShybrid"] = "Doublet"
+    CD$SCDShybrid <- "Singlet"
+    CD[CD$hybrid_score > doublet_cutoff, "SCDShybrid"] = "Doublet"
     head(CD)
     print("Estimated Singlets and Doublets")
-    table(CD$DoubletSCDShybrid)
+    table(CD$SCDShybrid)
     
     print("Finished Doublet Detection steps")
     
-    ## Run SCDS with varying classification stringencies ----------------------------------------------------------------
+    ## Run SCDShybrid with varying classification stringencies ----------------------------------------------------------------
     head(SeuratObject@meta.data)
     SeuratObject@meta.data$cxds_score <- CD$cxds_score[match(rownames(SeuratObject@meta.data), rownames(CD))]
     SeuratObject@meta.data$bcds_score <- CD$bcds_score[match(rownames(SeuratObject@meta.data), rownames(CD))]
     SeuratObject@meta.data$hybrid_score <- CD$hybrid_score[match(rownames(SeuratObject@meta.data), rownames(CD))]
-    SeuratObject@meta.data$DoubletSCDShybrid <- CD$DoubletSCDShybrid[match(rownames(SeuratObject@meta.data), rownames(CD))]
+    SeuratObject@meta.data$SCDShybrid <- CD$SCDShybrid[match(rownames(SeuratObject@meta.data), rownames(CD))]
     head(SeuratObject@meta.data)
     
-    print(table(SeuratObject@meta.data$DoubletSCDShybrid))
+    print(table(SeuratObject@meta.data$SCDShybrid))
     
     head(SeuratObject@meta.data)
-    cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletSCDShybrid)); print(cutoff.df)
+    cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$SCDShybrid)); print(cutoff.df)
     TableDF <- cutoff.df
     FontsDF <- c(2.5,2.5,2.5)
     titleDF <- paste0(Sample,": Doublets Detected")
@@ -175,7 +175,7 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
     
     write.table(SeuratObject@meta.data,file=paste0("Doublets_Detected_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
     
-    DoubletCells <- SeuratObject@meta.data[SeuratObject@meta.data$DoubletSCDShybrid != "Singlet",]; dim(DoubletCells)
+    DoubletCells <- SeuratObject@meta.data[SeuratObject@meta.data$SCDShybrid != "Singlet",]; dim(DoubletCells)
     head(DoubletCells)
     write.table(DoubletCells,file=paste0("Discarded_Cells_",OutName,Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
     
@@ -196,15 +196,15 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
   setwd(DDdir)
   SeuratObject@meta.data$DoubletfromSCDShybrid <- "Singlet"
   SeuratObject@meta.data[rownames(DoubletfromSCDShybrid), "DoubletfromSCDShybrid"] <- "Doublet"
-  print(table(SeuratObject@meta.data$DoubletfromSCDShybrid, SeuratObject@meta.data$DoubletSCDShybrid))
-  write.table(SeuratObject@meta.data, file = paste0("Comparison_SCDS_Doublets_Detected_", 
+  print(table(SeuratObject@meta.data$DoubletfromSCDShybrid, SeuratObject@meta.data$SCDShybrid))
+  write.table(SeuratObject@meta.data, file = paste0("Comparison_SCDShybrid_Doublets_Detected_", 
                                                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
                                                     ".txt"), quote = F, sep = "\t")
   
   print("Doing Final Plotting")
   
   setwd(DDdir)
-  pdf(file = paste0("Comparison_Plots_Doublets_Detected_", 
+  pdf(file = paste0("Comparison_SCDShybrid_Plots_Doublets_Detected_", 
                     Sample, "_using_PCA_", PCAnum, "_res_", resClus, 
                     ".pdf"), height = 10, width = 12)
   table(SeuratObject@meta.data$DoubletfromSCDShybrid)
@@ -228,7 +228,7 @@ Doublet_Detection_SCDShybrid <- function(SeuratObject, saveDIR, Sample, Species=
   }
   
   head(SeuratObject@meta.data)
-  cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletSCDShybrid)); print(cutoff.df)
+  cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$SCDShybrid)); print(cutoff.df)
   TableDF <- cutoff.df
   FontsDF <- c(2.5,2.5,2.5)
   titleDF <- paste0(Sample,": Doublets Detected")
