@@ -5,21 +5,24 @@
 \title{A Doublet_Detection_DF Function}
 \usage{
 Doublet_Detection_DF(
-  SeuratObject,
+  matrix.DIR,
   saveDIR,
   Sample,
   Species = "hsa",
   FeatureUseCount = 2500,
   PCAnum = 10,
   resClus = 0.5,
+  mincells = 3,
+  mingenes = 500,
+  mtpercent = 20,
+  rbpercent = 50,
   ClusPallette = ClusPallette,
   DoubletFinder = TRUE,
-  DoubletDecon = FALSE,
   plotCCgene = TRUE
 )
 }
 \arguments{
-\item{SeuratObject}{Seurat Object.}
+\item{matrix.DIR}{Raw10X data Directory}
 
 \item{saveDIR}{Path to save Quality plots and RDS data.}
 
@@ -36,8 +39,6 @@ Doublet_Detection_DF(
 \item{ClusPallette}{Color pallete to be used for clusters}
 
 \item{DoubletFinder}{Run DoubletFinder}
-
-\item{DoubletDecon}{Run DoubletDecon}
 
 \item{plotCCgene}{Plots TOP2A gene or not}
 }
