@@ -37,6 +37,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   
   #library(DoubletDecon)
   library(DoubletFinder)
+  library(ggpubr)
   
   setwd(saveDIR)
   DDdir <- paste(getwd(),paste0("Doublet_Detection_",Sample),sep="/"); print(DDdir)
@@ -96,6 +97,15 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   #ggtexttable(cutoff.df, theme = ttheme("minimal"))
   #ggtexttable(cutoff.df, theme = ttheme("classic"))
   
+  
+  SeuratObject <- NormalizeData(SeuratObject) %>%
+    FindVariableFeatures(nfeatures = FeatureNum, verbose = FALSE) %>%
+    ScaleData() %>%
+    RunPCA(verbose=FALSE) %>% 
+    FindNeighbors(dims = 1:PCAnum, verbose=FALSE) %>%
+    FindClusters(resolution = resClus) %>% 
+    RunUMAP(reduction='pca', dims=1:PCAnum, verbose=FALSE)
+  
   setwd(saveDIR)
   pdf(file=paste0("QC_Regular_",Sample,".pdf"),height = 10,width = 12)
   
@@ -107,10 +117,10 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     }
     
     p4.1 <- plot_grid(p2,p3, ncol = 1)
-    plot_grid(p1,p4.1, ncol = 2, rel_widths = c(1.5,1))
+    print(plot_grid(p1,p4.1, ncol = 2, rel_widths = c(1.5,1)))
   } else if(plotCCgene==FALSE){
     
-    plot_grid(p1,p2, ncol = 2, rel_widths = c(1.5,1))
+    print(plot_grid(p1,p2, ncol = 2, rel_widths = c(1.5,1)))
   }
   
   dev.off()
@@ -123,14 +133,6 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     setwd(DDdir)
     pdf(file=paste0("PreProcess_DoubletFinder_Doublet_Detection_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     print(paste0("PreProcess Seurat object for: ",Sample))
-    SeuratObject <- NormalizeData(SeuratObject) %>%
-      FindVariableFeatures(nfeatures = FeatureNum, verbose = FALSE) %>%
-      ScaleData() %>%
-      RunPCA(verbose=FALSE) %>% 
-      FindNeighbors(dims = 1:PCAnum, verbose=FALSE) %>%
-      FindClusters(resolution = resClus) %>% 
-      RunUMAP(reduction='pca', dims=1:PCAnum, verbose=FALSE)
-    
     print(ElbowPlot(SeuratObject, ndims = 50))
     print(DimHeatmap(SeuratObject, dims = 1:12, cells = 500, balanced = TRUE))
     dev.off()
@@ -216,7 +218,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     m1 <- plot_grid(d9, d2, nrow=1, rel_widths = c(1,2))
     m2 <- plot_grid(d1,d3,d4, nrow=1)
     m3 <- plot_grid(d5, d6,d7,d8, nrow=1)
-    plot_grid(m1, m2, m3, nrow = 3)
+    print(plot_grid(m1, m2, m3, nrow = 3))
     dev.off()
     
     print("Plotted Doublet Information")
@@ -235,6 +237,9 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   SeuratObject@meta.data$QCpass <- nrow(SingletCells)
   SeuratObject@meta.data$PassPercent <- round(nrow(SingletCells)/BeforeFilter*100,1)
   head(SeuratObject@meta.data)
+  
+  
+  saveRDS(SeuratObject, file = paste0(Sample,"_After_Doublets_using_PCA_",PCAnum,"_res_",resClus,".txt"))
   
   return(SeuratObject)
   
