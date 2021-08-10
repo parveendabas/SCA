@@ -239,6 +239,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   head(SeuratObject@meta.data)
   
   
+  setwd(saveDIR)
   saveRDS(SeuratObject, file = paste0(Sample,"_After_Doublets_using_PCA_",PCAnum,"_res_",resClus,".txt"))
   
   return(SeuratObject)
