@@ -161,7 +161,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     homotypic.prop <- modelHomotypic(SeuratObject$seurat_clusters)           ## ex: annotations <- SeuratObject@meta.data$ClusteringResults
     nExp_poi <- round(0.075*length(colnames(x = SeuratObject))); nExp_poi  ## Assuming 7.5% doublet formation rate - tailor for your dataset
     nExp_poi.adj <- round(nExp_poi*(1-homotypic.prop)); nExp_poi.adj
-    
+    dev.off()
     print("Finished Doublet Finder steps")
     
     ## Run DoubletFinder with varying classification stringencies ----------------------------------------------------------------
@@ -240,7 +240,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   
   
   setwd(saveDIR)
-  saveRDS(SeuratObject, file = paste0(Sample,"_After_Doublets_using_PCA_",PCAnum,"_res_",resClus,".txt"))
+  saveRDS(SeuratObject, file = paste0(Sample,"_After_Doublets_using_PCA_",PCAnum,"_res_",resClus,".rds"))
   
   return(SeuratObject)
   
