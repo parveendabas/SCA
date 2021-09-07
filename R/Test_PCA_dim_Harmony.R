@@ -32,7 +32,6 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
   print(paste0("Covariates being used:",IdentToBatchCorrect))
   print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
   
-  print("Processing started")
   ClusOrder <- ClusOrderFrom1
   
   print(paste0("Testing PCA dim:"))
