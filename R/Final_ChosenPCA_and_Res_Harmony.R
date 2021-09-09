@@ -30,11 +30,11 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   #Temp.object=SCdata
   #saveDIR=pkWD
   #SuffixName=paste0("Final_ChosenPCA_and_Resolution")
-  #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain")
-  #ColPaletteToPlot=list(ClusPalette, Light.Pallette, Dark.Pallette)
-  #IdentToBatchCorrect="orig.ident"
-  #ChosenPCA=25
-  #ChosenRes=0.1
+  #ColNamesToPlot=c("seurat_clusters", "DietLibrary", "DietStrain")
+  #ColPaletteToPlot=list(ClusPalette, OtherPalette, PairedPalette12)
+  #IdentToBatchCorrect="DietLibrary"
+  #ChosenPCA=50
+  #ChosenRes=0.25
   #mingenes=500
   
   setwd(saveDIR) 
@@ -50,16 +50,21 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:ChosenPCA)
     
-    Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:ChosenPCA)
-    Temp.object <- FindClusters(Temp.object, resolution=ChosenRes)
+    Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:ChosenPCA, graph.name = c("test", "cR1"))
+    Temp.object <- FindClusters(Temp.object, resolution=ChosenRes, graph.name = "cR1")
+    graphResName <- colnames(Temp.object@meta.data)[colnames(Temp.object@meta.data) %like% "cR1_res"]
+    print(graphResName)
+    Temp.object$seurat_clusters <- Temp.object@meta.data[,graphResName]
+    table(Temp.object@meta.data[,graphResName])
+    table(Temp.object@meta.data[,"seurat_clusters"])
     Temp.object$seurat_clusters <- MakeClustersFrom1(Temp.object$seurat_clusters)
     #sort(unique(Temp.object$seurat_clusters))
     
-    TempColumn=paste0("RNA_snn_res.",ChosenRes); TempColumn
+    TempColumn=paste0("cR1_res.",ChosenRes); TempColumn
     paste0(TempColumn,"_Based")
-    table(Temp.object@meta.data[,paste0("RNA_snn_res.",ChosenRes)])
-    Temp.object@meta.data[,paste0("RNA_snn_res.",ChosenRes)] <- Temp.object$seurat_clusters
-    table(Temp.object@meta.data[,paste0("RNA_snn_res.",ChosenRes)])
+    table(Temp.object@meta.data[,paste0("cR1_res.",ChosenRes)])
+    Temp.object@meta.data[,paste0("cR1_res.",ChosenRes)] <- Temp.object$seurat_clusters
+    table(Temp.object@meta.data[,paste0("cR1_res.",ChosenRes)])
     
     QCcols.list=list()
     for(i in 1:length(ColNamesToPlot)){
