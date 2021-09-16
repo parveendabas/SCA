@@ -28,7 +28,7 @@ mypal_d3 = pal_d3("category20")(20); mypal_d3 ## 10 Colors
 #show_col(pal_d3("category20b")(20))
 #show_col(pal_d3("category20c")(20))
 
-ClusPalette <- c(mypal_ucscgb, mypal_npg, mypal_jco, mypal_nejm); ClusPalette
+ClusPallette <- c(mypal_ucscgb, mypal_npg, mypal_jco, mypal_nejm); ClusPalette
 PairedPalette12 <- brewer.pal(n = 12, name = "Paired")
 OtherPalette <- c(mypal_jco[1:5], pal_d3("category20")(20), pal_lancet("lanonc")(9))
  

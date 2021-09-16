@@ -204,7 +204,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     
     d1 <- DimPlot(SeuratObject, group.by = "DoubletFinder", cols = c("purple", "cyan3"), label = F, label.size = 7, pt.size = 0.1)
     d2 <- VlnPlot(SeuratObject, features = "nFeature_RNA", pt.size = 0.1, group.by = "seurat_clusters", cols = c("purple", "cyan3"), split.by = "DoubletFinder") + ggtitle(paste0("nFeature_RNA, Doublets = ",nrow(DoubletCells),", (",round((nrow(DoubletCells)/BeforeFilter*100),1),"%)"))
-    d3 <- DimPlot(SeuratObject, group.by = "seurat_clusters", cols = ClusPalette, label = T, label.size = 7, pt.size = 0.1)
+    d3 <- DimPlot(SeuratObject, group.by = "seurat_clusters", cols = ClusPallette, label = T, label.size = 7, pt.size = 0.1)
     d4 <- FeaturePlot(SeuratObject, features = "percent.mt", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)
     d5 <- FeaturePlot(SeuratObject, features = "percent.rb", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)
     d6 <- FeaturePlot(SeuratObject, features = "nCount_RNA", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)

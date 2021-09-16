@@ -31,7 +31,7 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   #saveDIR=pkWD
   #SuffixName=paste0("Final_ChosenPCA_and_Resolution")
   #ColNamesToPlot=c("seurat_clusters", "DietLibrary", "DietStrain")
-  #ColPaletteToPlot=list(ClusPalette, OtherPalette, PairedPalette12)
+  #ColPaletteToPlot=list(ClusPallette, OtherPalette, PairedPalette12)
   #IdentToBatchCorrect="DietLibrary"
   #ChosenPCA=50
   #ChosenRes=0.25
@@ -87,7 +87,7 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     }
     
     Idents(Temp.object) <- "seurat_clusters"
-    p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPalette)
+    p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
     
     
     TopPanel <- plot_grid(plotlist = QCcols.list, ncol = length(ColNamesToPlot))

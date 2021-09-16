@@ -26,7 +26,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
   #saveDIR=pkWD
   #SuffixName=paste0("Testing_PCA_Dim")
   #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain")
-  #ColPaletteToPlot=list(ClusPalette, Light.Pallette, Dark.Pallette)
+  #ColPaletteToPlot=list(ClusPallette, Light.Pallette, Dark.Pallette)
   #IdentToBatchCorrect="orig.ident"
   
   print(paste0("Covariates being used:",IdentToBatchCorrect))
@@ -81,7 +81,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
         }
         
         Idents(Temp.object) <- "seurat_clusters"
-        p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPalette)
+        p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
         
         
         TopPanel <- plot_grid(plotlist = QCcols.list, ncol = length(ColNamesToPlot))

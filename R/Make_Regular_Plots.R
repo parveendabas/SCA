@@ -29,7 +29,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
   #saveDIR=pkWD
   #SuffixName=paste0("Regular_Plots_","Cube_Harmony")
   #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain", "Project", "Diet", "Strain")
-  #ColPaletteToPlot=list(ClusPalette, Light.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette)
+  #ColPaletteToPlot=list(ClusPallette, Light.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette)
   
   
   setwd(saveDIR)
@@ -174,7 +174,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
     
     Idents(Temp.object) <- "seurat_clusters"
     print(paste0("Plotting Clusters"))
-    QCcols.list[["seurat_clusters"]] <- DimPlot(Temp.object, reduction = "umap", cols = ClusPalette, label = T, label.size = 7, pt.size = 0.4)
+    QCcols.list[["seurat_clusters"]] <- DimPlot(Temp.object, reduction = "umap", cols = ClusPallette, label = T, label.size = 7, pt.size = 0.4)
     
     print(plot_grid(QCcols.list[[1]], QCcols.list[[2]], QCcols.list[["CC"]], QCcols.list[[3]], QCcols.list[[4]], QCcols.list[["seurat_clusters"]], ncol = 3))
     
@@ -201,7 +201,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
       Idents(Temp.object) <- ident1
       Idents(Temp.object) <- factor(Idents(Temp.object), levels = sort(unique(Temp.object@meta.data[,ident1])))
       
-      if(ident1 == "seurat_clusters" | ident1 == "CT"){
+      if(ident1 == "seurat_clusters" | ident1 == "CT" | ident1 == "Cluster"){
       QCcols.list[[ident1]] <- DimPlot(Temp.object, reduction = "umap", cols = ident1Palette, label = T, label.size = 6)
       } else {
         QCcols.list[[ident1]] <- DimPlot(Temp.object, reduction = "umap", cols = ident1Palette, label = F, label.size = 6)

@@ -68,7 +68,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       
       # Projecting singlet identities on TSNE visualization
       #DimPlot(Temp.object, group.by = "HTO_classification")
-      p1[[as.character(resUse)]] <- DimPlot(Temp.object, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPalette, label = T, label.size = 8) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
+      p1[[as.character(resUse)]] <- DimPlot(Temp.object, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPallette, label = T, label.size = 8) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
       
       
     }
