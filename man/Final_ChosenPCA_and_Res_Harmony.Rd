@@ -10,11 +10,11 @@ Final_ChosenPCA_and_Res_Harmony(
   IdentToBatchCorrect = "orig.ident",
   ThetaToBatchCorrect = 2,
   SuffixName = "Testing_PCA_Dim",
-  ChosenPCA = 25,
-  ChosenRes = 0.1,
   ColNamesToPlot = ColNamesToPlot,
   ColPaletteToPlot = ColPaletteToPlot,
   mingenes = 500,
+  ChosenPCA = 25,
+  ChosenRes = 0.1,
   ClusOrder = ClusOrderFrom1
 )
 }
@@ -29,15 +29,15 @@ Final_ChosenPCA_and_Res_Harmony(
 
 \item{SuffixName}{Suffix. to be added in the directory name as}
 
-\item{ChosenPCA}{ChosenPCA}
-
-\item{ChosenRes}{ChosenRes}
-
 \item{ColNamesToPlot}{Vector of identities to plot (Max = 3)}
 
 \item{ColPaletteToPlot}{list of color palettes to plot for the identities (Max = 3)}
 
 \item{mingenes}{minimum gene number that will be mentioned in the output file name}
+
+\item{ChosenPCA}{ChosenPCA}
+
+\item{ChosenRes}{ChosenRes}
 }
 \description{
 This function allows you to perform differential gene analysis.

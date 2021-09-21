@@ -15,7 +15,8 @@ Test_Cluster_Resolution_Harmony(
   mingenes = 500,
   PCAuse = 25,
   ClusResList = c(0.1, 0.15, 0.2, 0.3),
-  ClusOrder = ClusOrderFrom1
+  ClusOrder = ClusOrderFrom1,
+  DownSamplePCA = 1000
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ Test_Cluster_Resolution_Harmony(
 \item{PCAuse}{PCA dim to use}
 
 \item{ClusResList}{Vector of the PCAs to be used for testing}
+
+\item{DownSamplePCA}{#Cells to plot in UMAP for PCA testing}
 }
 \description{
 This function allows you to compare different cluster resolutions.

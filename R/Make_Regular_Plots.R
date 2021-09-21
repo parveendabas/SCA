@@ -26,10 +26,16 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
   
   
   #Temp.object=SCdata
-  #saveDIR=pkWD
-  #SuffixName=paste0("Regular_Plots_","Cube_Harmony")
-  #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain", "Project", "Diet", "Strain")
-  #ColPaletteToPlot=list(ClusPallette, Light.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette, Dark.Pallette)
+  #saveDIR=plotWD.Subset
+  #ColNamesToPlot=ColNamesToPlot
+  #ColPaletteToPlot=ColPaletteToPlot
+  #SuffixName="QC_Plots"
+  #Species="mmu"
+  #HistogramPlot=TRUE
+  #VlnPlot=TRUE
+  #QCumapPlots=TRUE
+  #TablePlot=TRUE
+  #UMAPPlot=TRUE
   
   
   setwd(saveDIR)
@@ -50,7 +56,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
       for(j in (1:length(ColNamesToPlot))[!1:length(ColNamesToPlot) %in% i]){
         #j=2
         ident2=ColNamesToPlot[j]
-        ident2Palette=ColPaletteToPlot[j]
+        ident2Palette=ColPaletteToPlot[[j]]
         print(paste0("    ident2 for plotting is: ",ident2, " (",j,")"))
         
     setwd(plotWD)
@@ -58,8 +64,8 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
     Hist <- melt(Temp.object@meta.data[,c(ident1, ident2)])
     head(Hist)
     #Hist[,ToUseCol] <- factor(Hist[,ToUseCol],levels = ToUseOrder)
-    p1 <- ggplot(Hist, aes_string(ident2)) + geom_bar(aes_string(fill = ident1))  + scale_fill_manual(values=ident1Palette) +
-      labs(x = ident2, fill=ident1) +
+    p1 <- ggplot(Hist, aes_string(ident1)) + geom_bar(aes_string(fill = ident2))  + scale_fill_manual(values=ident2Palette) +
+      labs(x = ident1, fill=ident2) +
       theme(strip.background = element_rect(color="black", fill="grey", size=1.5, linetype="solid"),
             strip.text.x = element_text(size = 15, colour = "black"),
             axis.title.x = element_text(color="black", size=15, face="bold"),
@@ -68,8 +74,8 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
             legend.key.size = unit(0.4, "cm"), plot.title = element_text(size = 20)) +
       ggtitle(paste0(ident1," vs ",ident2))
     
-    p2 <- ggplot(Hist, aes_string(x = ident2, fill = ident1)) +
-      geom_bar(position="fill") + labs(x = ident2, y = "Percentage %", fill=ident1)  + scale_fill_manual(values=ident1Palette) +
+    p2 <- ggplot(Hist, aes_string(x = ident1, fill = ident2)) +
+      geom_bar(position="fill") + labs(x = ident1, y = "Percentage %", fill=ident2)  + scale_fill_manual(values=ident2Palette) +
       theme(strip.background = element_rect(color="black", fill="grey", size=1.5, linetype="solid"),
             strip.text.x = element_text(size = 15, colour = "black"),
             axis.title.x = element_text(color="black", size=15, face="bold"),
@@ -90,7 +96,7 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
   TablePlot="YES"
   if(TablePlot=="YES"){
     
-    pdf(file=paste0("Tables_",SuffixName,".pdf"),height = 8,width = 16)
+    pdf(file=paste0("Tables_Old_",SuffixName,".pdf"),height = 8,width = 16)
     for(i in 1:(length(ColNamesToPlot))){
       #i=1
       ident1=ColNamesToPlot[i]
@@ -108,6 +114,40 @@ Make_Regular_Plots <- function(Temp.object, saveDIR,
         print(paste0("     ident2 for plotting is: ",ident2, " (",j,")"))
         
         PlotTable.withRowNames.TwoValues(Temp.object, ident1, ident2, paste0(ident1," vs ",ident2), 15, 1.7, 2, 2)
+        
+      }
+      
+    }
+    dev.off()  
+  }
+  
+  
+  TablePlot="YES"
+  if(TablePlot=="YES"){
+    
+    pdf(file=paste0("Tables_New_",SuffixName,".pdf"),height = 8,width = 16)
+    for(i in 1:(length(ColNamesToPlot))){
+      #i=1
+      ident1=ColNamesToPlot[i]
+      ident1Palette=ColPaletteToPlot[[i]]
+      print(paste0("ident1 for Table plotting is: ",ident1, " (",i,")"))
+      
+      cutoff <- as.data.frame(table(Temp.object@meta.data[,ident1]))
+      colnames(cutoff) <- c(ident1,"Count")
+      print(ggtexttable(cutoff, theme = ttheme("mViolet")) %>% tab_add_title(text = paste0(ident1), face = "bold", padding = unit(0.1, "line")))
+      
+      #z=i+1
+      #for(j in z:length(ColNamesToPlot)){
+      for(j in (1:length(ColNamesToPlot))[!1:length(ColNamesToPlot) %in% i]){
+        #j=3
+        ident2=ColNamesToPlot[j]
+        ident2Palette=ColPaletteToPlot[j]
+        print(paste0("     ident2 for plotting is: ",ident2, " (",j,")"))
+        
+        cutoff <- (table(Temp.object@meta.data[,ident1], Temp.object@meta.data[,ident2]))
+        #print(ggtexttable(cutoff, theme = ttheme("mViolet")))
+        tab <- ggtexttable(cutoff, theme = ttheme("mViolet"))
+        print(tab %>% tab_add_title(text = paste0(ident1," VS ",ident2), face = "bold", padding = unit(0.1, "line")))
         
       }
       

@@ -10,6 +10,7 @@
 #' @param ColPaletteToPlot list of color palettes to plot for the identities (Max = 3)
 #' @param mingenes minimum gene number that will be mentioned in the output file name
 #' @param PCAdimList Vector of the PCAs to be used for testing
+#' @param DownSamplePCA #Cells to plot in UMAP for PCA testing
 #' @keywords Temp.object, saveDIR, IdentToBatchCorrect, ThetaToBatchCorrect, SuffixName, ColNamesToPlot, ColPaletteToPlot mingenes PCAdimList
 #' @export
 #' @examples
@@ -19,15 +20,20 @@
 
 Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_PCA_Dim",  
                                ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500,
-                               PCAdimList=c(20, 25, 30, 40, 50), ClusOrder = ClusOrderFrom1){
+                               PCAdimList=c(20, 25, 30, 40, 50), ClusOrder = ClusOrderFrom1, DownSamplePCA=1000){
   
   
-  #Temp.object=Temp.object
-  #saveDIR=pkWD
-  #SuffixName=paste0("Testing_PCA_Dim")
-  #ColNamesToPlot=c("seurat_clusters", "CT", "DietStrain")
-  #ColPaletteToPlot=list(ClusPallette, Light.Pallette, Dark.Pallette)
-  #IdentToBatchCorrect="orig.ident"
+  #Temp.object=SCdata
+  #saveDIR=plotWD.Subset
+  #IdentToBatchCorrect=c("DietLibrary")
+  #ThetaToBatchCorrect=THETAtest
+  #SuffixName=paste0(OutputName,"_",SubsetName,"_theta_",THETAinpdf)
+  #ColNamesToPlot=ColNamesToPlot
+  #ColPaletteToPlot=ColPaletteToPlot
+  #mingenes=500
+  #PCAdimList = c(10, 15, 20, 25, 30, 40, 50)
+  #ClusOrder = ClusOrderFrom1
+  #DownSamplePCA=1000
   
   print(paste0("Covariates being used:",IdentToBatchCorrect))
   print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
@@ -36,6 +42,9 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
   
   print(paste0("Testing PCA dim:"))
   print(paste0(PCAdimList))
+  LastPCAdim=rev(PCAdimList)[1]
+  print(paste0("Last PCAdim to test is:",LastPCAdim))
+  PCADiminpdf = paste(PCAdimList, collapse = '_'); PCADiminpdf
   
   setwd(saveDIR) 
   #for(resPlot in c(0.1, 0.2, 0.3, 0.4)){
@@ -43,8 +52,9 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
     #resPlot=0.1
     print(paste0("Processing resolution:",resPlot))
     
-    pdf(file=paste0("PCA_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,"_Resolution_",resPlot,".pdf"),height = 9,width = 15)
+    pdf(file=paste0("Testing_PCA_Dimensions_",SuffixName,"_minGenes_",mingenes,"_Res_",resPlot,"_PCAs_",PCADiminpdf,".pdf"),height = 9,width = 15)
     
+    PCAumap.list=list()
     for(PCAdim in PCAdimList){
       #for(PCAdim in c(10)){
       
@@ -57,8 +67,21 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
       Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindClusters(Temp.object, resolution=resPlot)
       
-      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
+      ident1=ColNamesToPlot[1]
+      ident1Palette=ColPaletteToPlot[[1]]
       
+      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
+      Temp.object.DS <- subset(Temp.object,downsample=DownSamplePCA)
+      PCAumap.list[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", cols = ident1Palette, label = T, label.size = 6)   +  ggtitle(paste0("PCA:",PCAdim, ", res:",resPlot))
+    }
+    
+    
+    PCAcols=ceiling(length(PCAdimList)/2); PCAcols
+    print(paste0("Columns being plotted for PCAdims: ",PCAcols))
+    
+    print(ElbowPlot(Temp.object, ndims = LastPCAdim))
+    print(plot_grid(plotlist = PCAumap.list, ncol = PCAcols))
+    
       
         QCcols.list=list()
         for(i in 1:length(ColNamesToPlot)){
@@ -66,6 +89,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
           ident1=ColNamesToPlot[i]
           ident1Palette=ColPaletteToPlot[[i]]
           print(paste0("ident1 for UMAP plotting is: ",ident1, " (",i,")"))
+          
           
           Idents(Temp.object) <- ident1
           Idents(Temp.object) <- factor(Idents(Temp.object), levels = sort(unique(Temp.object@meta.data[,ident1])))
@@ -80,20 +104,23 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
           
         }
         
-        Idents(Temp.object) <- "seurat_clusters"
-        p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
+        ident1=ColNamesToPlot[1]
+        ident1Palette=ColPaletteToPlot[[1]]
+        Idents(Temp.object) <- ident1
+        p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.00, cols = ClusPallette)
+        p2 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
         
         
         TopPanel <- plot_grid(plotlist = QCcols.list, ncol = length(ColNamesToPlot))
         BottomPanel <- plot_grid(p1)
         print(plot_grid(TopPanel, BottomPanel, nrow = 2))
+        print(plot_grid(p2, nrow = 2))
         
         
-      }
+      
       
     #print(plot_grid(plotlist = QCcols.list, ncol = ceiling(length(ColNamesToPlot)/2)))
     
-    print(ElbowPlot(Temp.object, ndims = 50))
     dev.off()
   }
   

@@ -19,13 +19,27 @@
 
 
 Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_PCA_Dim", 
-                                         ChosenPCA=25, ChosenRes=0.1,
                                ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500,
+                               ChosenPCA=25, ChosenRes=0.1,
                                ClusOrder = ClusOrderFrom1){
   
   print(paste0("Covariates being used:",IdentToBatchCorrect))
   print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
+  print(paste0("Chosen PCA is: ",ChosenPCA))
+  print(paste0("Chosen Cluster Resolution is: ",ChosenRes))
   
+  
+  #Temp.object=SCdata
+  #saveDIR=plotWD.Subset
+  #IdentToBatchCorrect=c("DietLibrary")
+  #ThetaToBatchCorrect=THETAtest
+  #SuffixName=paste0(OutputName,"_",SubsetName,"_theta_",THETAinpdf)
+  #ColNamesToPlot=ColNamesToPlot
+  #ColPaletteToPlot=ColPaletteToPlot
+  #mingenes=500
+  #ChosenPCA=10
+  #ChosenRes=0.2
+  #ClusOrder = ClusOrderFrom1
   
   #Temp.object=SCdata
   #saveDIR=pkWD
@@ -41,10 +55,6 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   
   ClusOrder <- ClusOrderFrom1
   
-  print(paste0("Chosen PCA is: ",ChosenPCA))
-  print(paste0("Chosen Cluster Resolution is: ",ChosenRes))
-  
-  
     # We select the top 10 PCs for clustering and tSNE based on PCElbowPlot
     Temp.object <- RunPCA(object = Temp.object, npcs = ChosenPCA, verbose = FALSE)
     Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
@@ -53,7 +63,10 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:ChosenPCA, graph.name = c("test", "cR1"))
     Temp.object <- FindClusters(Temp.object, resolution=ChosenRes, graph.name = "cR1")
     graphResName <- colnames(Temp.object@meta.data)[colnames(Temp.object@meta.data) %like% "cR1_res"]
-    print(graphResName)
+    #graphResName <- graphResName[graphResName %like% ChosenRes]
+    graphResName <- graphResName[str_detect(graphResName, paste0(ChosenRes,"$"))]; print(graphResName)
+    
+    
     Temp.object$seurat_clusters <- Temp.object@meta.data[,graphResName]
     table(Temp.object@meta.data[,graphResName])
     table(Temp.object@meta.data[,"seurat_clusters"])
@@ -87,7 +100,8 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     }
     
     Idents(Temp.object) <- "seurat_clusters"
-    p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
+    p1 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.00, cols = ClusPallette)
+    p2 <- VlnPlot(Temp.object, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4, pt.size = 0.01, cols = ClusPallette)
     
     
     TopPanel <- plot_grid(plotlist = QCcols.list, ncol = length(ColNamesToPlot))
@@ -95,6 +109,7 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
     
     pdf(file=paste0("FINAL_",SuffixName,"_minGenes_",mingenes,"_PCA_",ChosenPCA,"_Res_",ChosenRes,".pdf"),height = 9,width = 15)
     print(plot_grid(TopPanel, BottomPanel, nrow = 2))
+    print(plot_grid(p2, nrow = 2))
     dev.off()
     
     
@@ -104,4 +119,6 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   print("Done")
   print(Sys.time())
 }
+
+
 

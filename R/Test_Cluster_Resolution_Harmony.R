@@ -11,6 +11,7 @@
 #' @param mingenes minimum gene number that will be mentioned in the output file name
 #' @param PCAuse PCA dim to use
 #' @param ClusResList Vector of the PCAs to be used for testing
+#' @param DownSamplePCA #Cells to plot in UMAP for PCA testing
 #' @keywords Temp.object, saveDIR, IdentToBatchCorrect, ThetaToBatchCorrect, SuffixName, ColToPlot, ColPaletteToPlot mingenes PCAuse ClusResList
 #' @export
 #' @examples
@@ -20,39 +21,47 @@
 
 Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig.ident", ThetaToBatchCorrect=2, SuffixName="Testing_Cluster_Resolution",  
                                  ColToPlot=ColToPlot, ColPaletteToPlot=ColPaletteToPlot,mingenes=500, PCAuse=25,
-                                 ClusResList=c(0.1, 0.15, 0.2, 0.3), ClusOrder = ClusOrderFrom1){
+                                 ClusResList=c(0.1, 0.15, 0.2, 0.3), ClusOrder = ClusOrderFrom1, DownSamplePCA=1000){
   
   
   print(paste0("Covariates being used:",IdentToBatchCorrect))
   print(paste0("Theta for Covariates being used:",ThetaToBatchCorrect))
   print(paste0("PCA being used :",PCAuse))
   
+  print(paste0("Testing Cluster Resolutions:"))
+  print(paste0(ClusResList))
+  LastClusRes=rev(ClusResList)[1]
+  print(paste0("Last ClusRes to test is:",LastClusRes))
+  ClusResinpdf = paste(ClusResList, collapse = '_'); ClusResinpdf
   
   #Temp.object=SCdata
-  #saveDIR=pkWD
-  #SuffixName=paste0("Testing_Cluster_Resolution")
-  #ColToPlot="DietStrain"
-  #ColPaletteToPlot=Dark.Pallette
-  #IdentToBatchCorrect="orig.ident"
-  #ClusResList=c(0.1, 0.15, 0.2, 0.3)
+  #saveDIR=plotWD.Subset
+  #IdentToBatchCorrect=c("DietLibrary")
+  #ThetaToBatchCorrect=THETAtest
+  #SuffixName=paste0(OutputName,"_",SubsetName,"_theta_",THETAinpdf)
+  #ColToPlot=ColToPlot
+  #ColPaletteToPlot=ColPaletteToPlot
   #mingenes=500
+  #PCAuse=10
+  #ClusResList = c(0.1, 0.15, 0.2, 0.3)
+  #ClusOrder = ClusOrderFrom1
+  #DownSamplePCA=1000
   
   ClusOrder <- ClusOrderFrom1
   
-  print(paste0("Testing Cluster Resolutions:"))
-  print(paste0(ClusResList))
   
   setwd(saveDIR) 
   for(PCAdim in PCAuse){
     
-    #PCAdim=25
+    #PCAdim=10
     
     Temp.object <- RunPCA(object = Temp.object, npcs = PCAdim, verbose = FALSE)
     Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:PCAdim)
     
-    pdf(file=paste0("Cluster_Resolution_Testing_Analysis_",SuffixName,"_minGenes_",mingenes,"_PCs",PCAuse,".pdf"),height = 14,width = 28)
-    p1 = list()
+    pdf(file=paste0("Testing_Cluster_Resolution_",SuffixName,"_minGenes_",mingenes,"_PCA_",PCAuse,"_ClusRes_",ClusResinpdf,".pdf"),height = 9,width = 15)
+    
+    ClusRes.list = list()
     for(resUse in ClusResList){
       #resUse=0.1
       print(paste0("Processing res:",resUse))
@@ -68,18 +77,25 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       
       # Projecting singlet identities on TSNE visualization
       #DimPlot(Temp.object, group.by = "HTO_classification")
-      p1[[as.character(resUse)]] <- DimPlot(Temp.object, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPallette, label = T, label.size = 8) + ggtitle(paste0("PCA:",PCAdim, ", Res:",resUse))
-      
+      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
+      Temp.object.DS <- subset(Temp.object,downsample=DownSamplePCA)
+      ClusRes.list[[as.character(resUse)]] <- DimPlot(Temp.object.DS, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPallette, label = T, label.size = 8) + ggtitle(paste0("Res:",resUse, ", PCA:",PCAdim))
       
     }
+    
+    
+    ClusRescols=ceiling(length(ClusResList)/2); ClusRescols
+    print(paste0("Columns being plotted for ClusRes: ",ClusRescols))
+    
+    print(plot_grid(plotlist = ClusRes.list, ncol = ClusRescols))
+    
     
     Idents(Temp.object) <- ColToPlot
     q1 <- DimPlot(Temp.object, pt.size = 0.5, reduction = "umap", cols = ColPaletteToPlot, 
                   label = F, label.size = 7) + ggtitle(paste0("PCA:", PCAdim))
     
-    TopPanel <- plot_grid(plotlist = p1, ncol = length(ClusResList))
-    BottomPanel <- plot_grid(q1, ncol = length(ClusResList))
-    print(plot_grid(TopPanel, BottomPanel, nrow = 2))
+    TopPanel <- plot_grid(q1, ncol = ClusRescols)
+    print(plot_grid(TopPanel, nrow = 2))
     dev.off()
   }
   

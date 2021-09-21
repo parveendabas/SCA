@@ -14,7 +14,8 @@ Test_PCA_dim_Harmony(
   ColPaletteToPlot = ColPaletteToPlot,
   mingenes = 500,
   PCAdimList = c(20, 25, 30, 40, 50),
-  ClusOrder = ClusOrderFrom1
+  ClusOrder = ClusOrderFrom1,
+  DownSamplePCA = 1000
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ Test_PCA_dim_Harmony(
 \item{mingenes}{minimum gene number that will be mentioned in the output file name}
 
 \item{PCAdimList}{Vector of the PCAs to be used for testing}
+
+\item{DownSamplePCA}{#Cells to plot in UMAP for PCA testing}
 }
 \description{
 This function  allows you to compare different no. of PCAs for Harmony. Cluster Resolution is set to 0.1.
