@@ -55,6 +55,10 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
     pdf(file=paste0("Testing_PCA_Dimensions_",SuffixName,"_minGenes_",mingenes,"_Res_",resPlot,"_PCAs_",PCADiminpdf,".pdf"),height = 9,width = 15)
     
     PCAumap.list=list()
+    if(length(ColNamesToPlot) == 2){ print("Total ColNamesToPlot length: 2"); PCAumap.list.ident2=list()}
+    if(length(ColNamesToPlot) == 3){ print("Total ColNamesToPlot length: 3"); PCAumap.list.ident2=list(); PCAumap.list.ident3=list()}
+    if(length(ColNamesToPlot) == 4){ print("Total ColNamesToPlot length: 4"); PCAumap.list.ident2=list(); PCAumap.list.ident3=list(); PCAumap.list.ident4=list()}
+
     for(PCAdim in PCAdimList){
       #for(PCAdim in c(10)){
       
@@ -73,6 +77,17 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
       Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
       Temp.object.DS <- subset(Temp.object,downsample=DownSamplePCA)
       PCAumap.list[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", cols = ident1Palette, label = T, label.size = 6)   +  ggtitle(paste0("PCA:",PCAdim, ", res:",resPlot))
+
+	if(length(ColNamesToPlot) == 2){ print("Saving plots of ident 2"); 
+	PCAumap.list.ident2[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[2], cols = ColPaletteToPlot[[2]], label = T, label.size = 6)
+	} else if(length(ColNamesToPlot) == 3){ print("Saving plots of idents 2 & 3");  
+	PCAumap.list.ident2[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[2], cols = ColPaletteToPlot[[2]], label = T, label.size = 6)
+	PCAumap.list.ident3[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[3], cols = ColPaletteToPlot[[3]], label = T, label.size = 6)
+	} else if(length(ColNamesToPlot) == 4){ print("Saving plots of idents 2, 3 & 4");  
+        PCAumap.list.ident2[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[2], cols = ColPaletteToPlot[[2]], label = T, label.size = 6)
+        PCAumap.list.ident3[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[3], cols = ColPaletteToPlot[[3]], label = T, label.size = 6)
+        PCAumap.list.ident4[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", group.by=ColNamesToPlot[4], cols = ColPaletteToPlot[[4]], label = T, label.size = 6)
+        }
     }
     
     
@@ -82,6 +97,18 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
     print(ElbowPlot(Temp.object, ndims = LastPCAdim))
     print(plot_grid(plotlist = PCAumap.list, ncol = PCAcols))
     
+	if(length(ColNamesToPlot) == 2){ print("Plotting ident 2"); 
+	print(plot_grid(plotlist = PCAumap.list.ident2, ncol = PCAcols))
+        } else if(length(ColNamesToPlot) == 3){ print("Plotting idents 2 & 3");
+	print(plot_grid(plotlist = PCAumap.list.ident2, ncol = PCAcols))
+	print(plot_grid(plotlist = PCAumap.list.ident3, ncol = PCAcols))
+        } else if(length(ColNamesToPlot) == 4){ print("Plotting idents 2, 3 & 4");
+	print(plot_grid(plotlist = PCAumap.list.ident2, ncol = PCAcols))
+	print(plot_grid(plotlist = PCAumap.list.ident3, ncol = PCAcols))
+	print(plot_grid(plotlist = PCAumap.list.ident4, ncol = PCAcols))
+        }
+
+
       
         QCcols.list=list()
         for(i in 1:length(ColNamesToPlot)){

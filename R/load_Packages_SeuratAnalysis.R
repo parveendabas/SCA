@@ -15,7 +15,9 @@ load_Packages_SeuratAnalysis <- function(){
  
 	libraries(c("Seurat", "DoubletFinder", "Matrix", "stringr", "useful", "ggplot2", "gridExtra", "grid", "gtable", "data.table", "cowplot", "plyr", "reshape2", "tidyr", "pheatmap", "RColorBrewer", "tidyverse", "colorspace", "splines", "AnnotationDbi", "dplyr", "gridBase", "ggrepel", "calibrate", "ggplotify")) 
 
-	libraries(c("RColorBrewer", "ggpubr"))
+	libraries(c("RColorBrewer", "ggpubr", "harmony", "SingleCellExperiment", "SummarizedExperiment", "easypackages", "SCA"))
+
+	
   
 }
 
