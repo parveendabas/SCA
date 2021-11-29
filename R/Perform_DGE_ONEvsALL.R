@@ -63,7 +63,30 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
     }
     
     head(markers, n = 15); print(dim(markers))
-    if(nrow(markers) > 0){
+    
+    if (nrow(markers) == 0) {
+      
+      print("Skipping Plotting")
+      
+      } else if(nrow(markers) == 1) {
+        print("Plotting only DotPlot")
+
+	pdf(file = paste0("DEGs_DotPlot_", DgeNameInpdf, 
+                          ".pdf"), height = 6, width = 8)
+        p1 <- DotPlot(Temp.object, features = (markers$gene), 
+                      cols = c("gray80", "red")) + theme(axis.title.x = element_blank(), 
+                                                         axis.title.y = element_blank(), axis.text = element_text(size = 13), 
+                                                         legend.text = element_text(size = 13), legend.title = element_text(size = 15), 
+                                                         legend.key.size = unit(0.4, "cm")) + RotatedAxis() + 
+                scale_colour_viridis_c(option = "plasma") + ggtitle(paste0(MainCol))
+        p2 <- VlnPlot(SeuratObj.CT.Strain, features = markers$gene, pt.size = 0)  + geom_boxplot(width=0.1, outlier.shape=NA)
+        
+        print(plot_grid(p1, p2, NULL, nrow = 2))
+        
+        dev.off()
+        
+      } else if (nrow(markers) >1 ) {
+
       top <- markers %>% group_by(cluster) %>% top_n(n = topnumber, wt = avg_log2FC); top <- top[!duplicated(top$gene),]; dim(top); 
       topFDR <- markers %>% dplyr::arrange(p_val_adj, desc(avg_log2FC)) %>% dplyr::group_by(cluster) %>% dplyr::slice(1:topnumber); topFDR <- topFDR[!duplicated(topFDR$gene),]; dim(topFDR);
       write.table(markers, file = paste0("DEGs_Heatmap_",DgeNameInpdf,".txt"),quote=F,sep="\t")
