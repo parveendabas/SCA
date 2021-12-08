@@ -67,7 +67,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       print(paste0("Processing res:",resUse))
       Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:PCAdim)
       Temp.object <- FindClusters(Temp.object, resolution=resUse)
-      Temp.object$seurat_clusters <- MakeClustersFrom1(Temp.object$seurat_clusters)
+      Temp.object$seurat_clusters <- MakeClustersFrom1(Temp.object$seurat_clusters, ClusOrder)
       
       #sort(unique(Temp.object$seurat_clusters))
       #paste0(ToUseColumn,"_Based")
@@ -77,7 +77,7 @@ Test_Cluster_Resolution_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
       
       # Projecting singlet identities on TSNE visualization
       #DimPlot(Temp.object, group.by = "HTO_classification")
-      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
+      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters, ClusOrder)
       Temp.object.DS <- subset(Temp.object,downsample=DownSamplePCA)
       ClusRes.list[[as.character(resUse)]] <- DimPlot(Temp.object.DS, group.by = "seurat_clusters", pt.size = 0.5, reduction = "umap", cols = ClusPallette, label = T, label.size = 8) + ggtitle(paste0("Res:",resUse, ", PCA:",PCAdim))
       

@@ -56,21 +56,28 @@ Final_ChosenPCA_and_Res_Harmony <- function(Temp.object, saveDIR, IdentToBatchCo
   ClusOrder <- ClusOrderFrom1
   
     # We select the top 10 PCs for clustering and tSNE based on PCElbowPlot
+    print("Running PCA")
     Temp.object <- RunPCA(object = Temp.object, npcs = ChosenPCA, verbose = FALSE)
+    print("Running Harmony")
     Temp.object <- RunHarmony(Temp.object, group.by.vars = IdentToBatchCorrect, theta=ThetaToBatchCorrect)
+    print("Running UMAP")
     Temp.object <- RunUMAP(Temp.object, reduction = "harmony", dims = 1:ChosenPCA)
+    print("Running FindNeighbors")
     
     Temp.object <- FindNeighbors(Temp.object, reduction = "harmony", dims = 1:ChosenPCA, graph.name = c("test", "cR1"))
+    print("Running FindClusters")
     Temp.object <- FindClusters(Temp.object, resolution=ChosenRes, graph.name = "cR1")
+    print("Completed")
+
     graphResName <- colnames(Temp.object@meta.data)[colnames(Temp.object@meta.data) %like% "cR1_res"]
     #graphResName <- graphResName[graphResName %like% ChosenRes]
     graphResName <- graphResName[str_detect(graphResName, paste0(ChosenRes,"$"))]; print(graphResName)
-    
+    print(paste0("Fectched Res: ",graphResName)) 
     
     Temp.object$seurat_clusters <- Temp.object@meta.data[,graphResName]
     table(Temp.object@meta.data[,graphResName])
     table(Temp.object@meta.data[,"seurat_clusters"])
-    Temp.object$seurat_clusters <- MakeClustersFrom1(Temp.object$seurat_clusters)
+    Temp.object$seurat_clusters <- MakeClustersFrom1(Temp.object$seurat_clusters, ClusOrderFrom1)
     #sort(unique(Temp.object$seurat_clusters))
     
     TempColumn=paste0("cR1_res.",ChosenRes); TempColumn

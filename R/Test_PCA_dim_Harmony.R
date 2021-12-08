@@ -45,7 +45,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
   LastPCAdim=rev(PCAdimList)[1]
   print(paste0("Last PCAdim to test is:",LastPCAdim))
   PCADiminpdf = paste(PCAdimList, collapse = '_'); PCADiminpdf
-  
+
   setwd(saveDIR) 
   #for(resPlot in c(0.1, 0.2, 0.3, 0.4)){
   for(resPlot in c(0.1)){
@@ -74,7 +74,7 @@ Test_PCA_dim_Harmony <- function(Temp.object, saveDIR, IdentToBatchCorrect="orig
       ident1=ColNamesToPlot[1]
       ident1Palette=ColPaletteToPlot[[1]]
       
-      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters)
+      Temp.object@meta.data$seurat_clusters <- MakeClustersFrom1(Temp.object@meta.data$seurat_clusters, ClusOrder)
       Temp.object.DS <- subset(Temp.object,downsample=DownSamplePCA)
       PCAumap.list[[as.character(PCAdim)]] <- DimPlot(Temp.object.DS, reduction = "umap", cols = ident1Palette, label = T, label.size = 6)   +  ggtitle(paste0("PCA:",PCAdim, ", res:",resPlot))
 
