@@ -13,9 +13,15 @@
 #' @param FDR FDR cutoff
 #' @param FCcutoff Limit testing to genes which show, on average, at least X-fold difference (log-scale) between the two groups of cells. Default is 0.25 Increasing logfc.threshold speeds up the function, but can miss weaker signals.
 #' @param topnumber Max #genes to be plotted per identity
+#' @param min.pctagecells only test genes that are detected in a minimum fraction of min.pct cells in either of the two populations. Meant to speed up the function by not testing genes that are very infrequently expressed. Default is 0.25
+#' @param test.use Denotes which test to use.
+#' @param latent.vars Variables to test, used only when test.use is one of 'LR', 'negbinom', 'poisson', or 'MAST'
+#' @param min.diff.pct only test genes that show a minimum difference in the fraction of detection between the two groups. Set to -Inf by default
+#' @param only.pos.Genes Only return positive markers (TRUE by default)
 #' @param downsampleHeatmap Max #cells to be plotted per identity
 #' @param plots Save CCA plots
 #' @param save Save integrated CCA RDS Seurat object
+#' @param ComputeDGEs To run FindAllMarkers or not
 #' @keywords Temp.object, saveDIR, SuffixName="ALLcells", MainCol, MainColOrder, MainColPallete, ColNamesToPlot, ColPaletteToPlot, Species, FDR, FCcutoff, topnumber, downsampleHeatmap, plots, save
 #' @export
 #' @examples
@@ -26,12 +32,12 @@
 Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells", 
                                  MainCol="seurat_clusters", MainColOrder=ClusOrder, MainColPallete=ClusPallette,
                                  ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot, Species="hsa", 
-                                 FDR = 0.1, FCcutoff = 1.5, topnumber = 5, downsampleHeatmap = 300, plots = TRUE, save = TRUE){
+                                 FDR = 0.1, FCcutoff = 1.5, topnumber = 5, min.pctagecells = 0.25, test.use = "wilcox", only.pos.Genes = TRUE, latent.vars = NULL, min.diff.pct = -Inf, downsampleHeatmap = 300, plots = TRUE, save = TRUE, ComputeDGEs="YES"){
   
   #Temp.object <- SCdata
   #saveDIR <- pkWD
   
-  DgeNameInpdf <- paste0(MainCol,"_Based_",SuffixName); DgeNameInpdf
+  DgeNameInpdf <- paste0(MainCol,"_Based_",SuffixName,"_",test.use,"_min.pct_",min.pctagecells); DgeNameInpdf
   
   setwd(saveDIR)
   plotWD <- paste(getwd(),paste0("DGEs"),sep="/"); print(plotWD)
@@ -44,6 +50,8 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
   Idents(Temp.object) <- MainCol
   DefaultAssay(Temp.object) <- "RNA"
   
+  print(paste0("Differential Genes Positive only: ",only.pos.Genes))
+  
   setwd(plotWD1)
   RUNheatmap="YES"
   if(RUNheatmap=="YES"){
@@ -51,7 +59,10 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
     Idents(Temp.object) <- MainCol
     ##MainColOrder <- sort(unique(Temp.object@meta.data[,MainCol])); MainColOrder
     Idents(Temp.object) <- factor(Idents(Temp.object), levels= MainColOrder[MainColOrder %in% unique(Temp.object@meta.data[,MainCol])])
-    markers <- FindAllMarkers(Temp.object, only.pos = TRUE, min.pct = 0.25, logfc.threshold = log2(FCcutoff), assay = "RNA")
+
+
+    if(ComputeDGEs=="YES"){
+    markers <- FindAllMarkers(Temp.object, min.pct = min.pctagecells, logfc.threshold = log2(FCcutoff), assay = "RNA", test.use = test.use, latent.vars = latent.vars, min.diff.pct = min.diff.pct, only.pos = only.pos.Genes)
     markers <- markers[markers$p_val_adj < FDR,]; dim(markers)
     
     if(Species=="hsa"){
@@ -60,6 +71,14 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
     } else {
       print("Removing MT and Ribosomal genes of Mouse")
     markers <- Remove_Genes_Rp_mt_Rna_Mouse(markers)
+    }
+    } else{
+
+    print(paste0("DGEs step already completed, reading marker info from the directory"))
+    setwd(plotWD1)
+    markers <- read.table(file = paste0("DEGs_Heatmap_",DgeNameInpdf,".txt"), header = T, row.names = 1)
+    print(head(markers)); print(dim(markers))
+
     }
     
     head(markers, n = 15); print(dim(markers))
@@ -167,11 +186,37 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
         Group6 = Group6.FULL[names(Group6.FULL) %in% as.character(unique(meta.data.plot$Group6))]
       )}
       
-      
+
+
+      names(ann_colors) <- ColNamesToPlot      
+      colnames(meta.data.plot) <- ColNamesToPlot
+      print(ann_colors)
+      print(head(meta.data.plot))
       
       colors <- c(seq(-2,2,by=0.01))
       my_palette <- c(colorRampPalette(colors = c("darkblue", "#a7c5f2", "#e6f0f5", "gray97", "darksalmon", "orangered3", "darkred")) (n = length(colors)))
       
+      pdf(file=paste0("Counts_DEGs_Heatmap_",DgeNameInpdf,".pdf"),height = 8,width = 10)
+      maxylim.temp <- max(table(markers$cluster)); maxylim <- maxylim.temp+ceiling(maxylim.temp*0.1)
+      p1 <- ggplot(markers, aes(cluster)) + geom_bar(aes(fill=cluster)) + ylim(0,maxylim) + scale_fill_manual(values=ColPaletteToPlot[[1]]) + geom_text(stat='count', aes(label=..count..), vjust=-1)
+      
+      # https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html
+      library(UpSetR)
+      library(ComplexHeatmap)
+      VarNames <- sort(unique(markers$cluster)); VarNames
+      UpsetSet <- lapply(X = VarNames, FUN = function(x){ (markers[markers$cluster == x,"gene"])}); UpsetSet
+      names(UpsetSet) <- VarNames
+      m <- make_comb_mat(UpsetSet)
+      m.df <- as.data.frame(m)
+      #UpSet(m)
+      UpSetPlotOrder <- levels(Idents(Temp.object)); UpSetPlotOrder <- UpSetPlotOrder[UpSetPlotOrder %in% rownames(m.df)]
+      print(paste0("Upset Order is:",UpSetPlotOrder))
+      p2 <- grid.grabExpr(draw(UpSet(m, comb_col = "#0000FF", bg_col = "#F0F0FF", bg_pt_col = "#CCCCFF", top_annotation = upset_top_annotation(m, add_numbers = TRUE),
+                                     right_annotation = upset_right_annotation(m, add_numbers = TRUE), set_order = UpSetPlotOrder)))
+      
+      print(plot_grid(p1, p2, ncol = 1, rel_heights = c(1, 1.5)))
+      dev.off()
+
       pdf(file=paste0("DEGs_Heatmap_",DgeNameInpdf,".pdf"),height = 14,width = 20)
       print(DotPlot(Temp.object, features = (topFDR$gene), cols= c("gray80", "red"))  + 
               theme(axis.title.x=element_blank(), axis.title.y = element_blank(), axis.text=element_text(size=13), legend.text=element_text(size=13), legend.title=element_text(size=15),
@@ -188,6 +233,9 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       dev.off()
       
       rm(SCdata.temp.Heatmap)
+
+        print(table(markers$cluster))
+	return(markers)
     }
   }
   

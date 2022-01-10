@@ -1,12 +1,17 @@
 #' A Perform_Pathway_Analysis_FGSEA Function
 #'
-#' This function allows you to perform differential gene analysis.
+#' This function allows you to perform differential gene analysis. 
+#' Category: H, SubCategory: None
+#' Category: C2, SubCategory: CP=29, CP:KEGG=186, CP:PID=196, CP:BIOCARTA=292, CP:WIKIPATHWAYS=615, CP:REACTOME=1604, CGP=3368
+#' Category: C5, SubCategory: GO:BP=7480, GO:CC=996, GO:MF=1707
 #' @param Temp.object A list of Seurat objects between which to find anchors for downstream integration.
 #' @param saveDIR Path to save generated data.
 #' @param SuffixName Suffix. to be added in the directory name as 
 #' @param msigdbrCategoryList Msigdb Category List. H, C1:C8. https://www.gsea-msigdb.org/gsea/msigdb/
 #' @param SubmsigdbrCategorySubset SubCategoryUse list based on MsigDB selected
 #' @param minSizeGeneSet minimum Size of GeneSet for filtering
+#' @param DownsamplePerIdent Number of cells to use per Idents
+#' @param GroupName Column to use for Identity
 #' @param topnumber Max #pathways to be plotted per group
 #' @param PDFheight PDFheight
 #' @param PDFwidth PDFwidth
@@ -18,6 +23,7 @@
 
 
 Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pathway_FGSEA", msigdbrCategoryList="H", SubmsigdbrCategorySubset = "", 
+				DownsamplePerIdent="ALL", GroupName="Cluster",
                                  minSizeGeneSet=5, topnumber=10, PDFheight=10, PDFwidth=12){
   
   #Temp.object=SeuratObj
@@ -35,8 +41,26 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
   library(fgsea)
   library(tibble)
   library(pheatmap)
+  library(viridis)
   
+  setwd(saveDIR)
+  PathwaydirMain <- paste(getwd(),paste0("Pathway_Analysis"),sep="/"); print(PathwaydirMain)
+  dir.create(file.path(getwd(),paste0("Pathway_Analysis")), showWarnings = FALSE)
+  setwd(PathwaydirMain)
   
+  Temp.object.1 <- Temp.object 
+  if(DownsamplePerIdent == "ALL"){
+    print("Using All Cells for the Analysis")
+    } else {
+    DownsamplePerIdent=as.numeric(DownsamplePerIdent)
+    print(paste0("Downsampling the data, per ident cells = ",DownsamplePerIdent))
+    Temp.object=subset(Temp.object, downsample=DownsamplePerIdent) 
+    }
+
+    print(Temp.object.1)
+    print(Temp.object)
+
+ 
   print(paste0("Top Genes to plot:",topnumber))
         
         for(CategoryUse in c(msigdbrCategoryList)){
@@ -45,7 +69,7 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
           
           print(paste0("Check Point:  ----------->>>>>>>>>>>>>> MAIN Cat"))
           
-          if(SubmsigdbrCategorySubset == ""){
+          if(length(SubmsigdbrCategorySubset) == 1 & unique(SubmsigdbrCategorySubset=="")){
             print(paste0("SubCategoryUse is not provided, using default options for categories"))
             
             print(paste0("Check Point:  ----------->>>>>>>>>>>>>> MAIN Sub"))
@@ -197,8 +221,8 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
             
             print(paste0("Check Point:  ----------->>>>>>>>>>>>>> 3"))
             
-            setwd(plotWD)
-            pdf(paste0(GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",downsampleCells,"_top_",topnumber,".pdf"),height=PDFheight, width=PDFwidth)
+            setwd(PathwaydirMain)
+            pdf(paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,"_top_",topnumber,".pdf"),height=PDFheight, width=PDFwidth)
             #pheatmap(Annot.pathway4,scale = "none",cluster_rows = T,cluster_cols = F,border_color = "black",treeheight_row = 0,legend_breaks = c(-5,-2,0,2,5),
             #         fontsize =8, cellwidth = 15,cellheight =10,color= viridis(8),angle_col = 90,
             #         main = paste("                                          ",name,objname," (NES)"))
@@ -214,7 +238,7 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
             dev.off()
             
             print(paste0("Check Point: ----------->>>>>>>>>>>>>>  4"))
-            saveRDS(Annot.pathway2, file=paste0(GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",downsampleCells,".rds"))
+            saveRDS(Annot.pathway2, file=paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,".rds"))
           
             print(paste0("Check Point: ----------->>>>>>>>>>>>>>  5"))
             

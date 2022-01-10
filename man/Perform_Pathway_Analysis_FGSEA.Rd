@@ -10,6 +10,8 @@ Perform_Pathway_Analysis_FGSEA(
   SuffixName = "Pathway_FGSEA",
   msigdbrCategoryList = "H",
   SubmsigdbrCategorySubset = "",
+  DownsamplePerIdent = "ALL",
+  GroupName = "Cluster",
   minSizeGeneSet = 5,
   topnumber = 10,
   PDFheight = 10,
@@ -27,6 +29,10 @@ Perform_Pathway_Analysis_FGSEA(
 
 \item{SubmsigdbrCategorySubset}{SubCategoryUse list based on MsigDB selected}
 
+\item{DownsamplePerIdent}{Number of cells to use per Idents}
+
+\item{GroupName}{Column to use for Identity}
+
 \item{minSizeGeneSet}{minimum Size of GeneSet for filtering}
 
 \item{topnumber}{Max #pathways to be plotted per group}
@@ -37,6 +43,9 @@ Perform_Pathway_Analysis_FGSEA(
 }
 \description{
 This function allows you to perform differential gene analysis.
+Category: H, SubCategory: None
+Category: C2, SubCategory: CP=29, CP:KEGG=186, CP:PID=196, CP:BIOCARTA=292, CP:WIKIPATHWAYS=615, CP:REACTOME=1604, CGP=3368
+Category: C5, SubCategory: GO:BP=7480, GO:CC=996, GO:MF=1707
 }
 \examples{
 Perform_Pathway_Analysis_FGSEA()

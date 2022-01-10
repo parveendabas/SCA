@@ -17,9 +17,15 @@ Perform_DGE_ONEvsALL(
   FDR = 0.1,
   FCcutoff = 1.5,
   topnumber = 5,
+  min.pctagecells = 0.25,
+  test.use = "wilcox",
+  only.pos.Genes = TRUE,
+  latent.vars = NULL,
+  min.diff.pct = -Inf,
   downsampleHeatmap = 300,
   plots = TRUE,
-  save = TRUE
+  save = TRUE,
+  ComputeDGEs = "YES"
 )
 }
 \arguments{
@@ -47,11 +53,23 @@ Perform_DGE_ONEvsALL(
 
 \item{topnumber}{Max #genes to be plotted per identity}
 
+\item{min.pctagecells}{only test genes that are detected in a minimum fraction of min.pct cells in either of the two populations. Meant to speed up the function by not testing genes that are very infrequently expressed. Default is 0.25}
+
+\item{test.use}{Denotes which test to use.}
+
+\item{only.pos.Genes}{Only return positive markers (TRUE by default)}
+
+\item{latent.vars}{Variables to test, used only when test.use is one of 'LR', 'negbinom', 'poisson', or 'MAST'}
+
+\item{min.diff.pct}{only test genes that show a minimum difference in the fraction of detection between the two groups. Set to -Inf by default}
+
 \item{downsampleHeatmap}{Max #cells to be plotted per identity}
 
 \item{plots}{Save CCA plots}
 
 \item{save}{Save integrated CCA RDS Seurat object}
+
+\item{ComputeDGEs}{To run FindAllMarkers or not}
 }
 \description{
 This function allows you to perform differential gene analysis.
