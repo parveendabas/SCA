@@ -3,7 +3,8 @@
 %   R/Perform_GeneOntology_Analysis_Using_Marker_Genes.R
 \name{Perform_GeneOntology_Analysis_Using_Marker_Genes}
 \alias{Perform_GeneOntology_Analysis_Using_Marker_Genes}
-\title{A Perform_GeneOntology_Analysis_Using_Marker_Genes Function}
+\title{A Perform_GeneOntology_Analysis_Using_Marker_Genes Function
+Except EnrichR, all others uses DEGs}
 \usage{
 Perform_GeneOntology_Analysis_Using_Marker_Genes(
   Temp.object,

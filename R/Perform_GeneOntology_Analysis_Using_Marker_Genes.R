@@ -1,4 +1,5 @@
 #' A Perform_GeneOntology_Analysis_Using_Marker_Genes Function
+#' Except EnrichR, all others uses DEGs
 #'
 #' This function allows you to perform differential gene analysis.
 #' @param Temp.object A list of Seurat objects between which to find anchors for downstream integration.
@@ -44,6 +45,7 @@ Perform_GeneOntology_Analysis_Using_Marker_Genes <- function(Temp.object, Temp.M
   
   
   print(paste0("Top Genes to plot:",topnumber))
+  print(table(Temp.MarkerList[,GroupNameDEGs]))
   
   ## EnrighGO
   # https://bookdown.org/ytliu13207/SingleCellMultiOmicsDataAnalysis/deg-go-enrichment.html#load-deg

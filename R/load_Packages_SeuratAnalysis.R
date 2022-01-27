@@ -11,11 +11,13 @@
 
 load_Packages_SeuratAnalysis <- function(){
 
-	library(easypackages)
- 
-	libraries(c("Seurat", "DoubletFinder", "Matrix", "stringr", "useful", "ggplot2", "gridExtra", "grid", "gtable", "data.table", "cowplot", "plyr", "reshape2", "tidyr", "pheatmap", "RColorBrewer", "tidyverse", "colorspace", "splines", "AnnotationDbi", "dplyr", "gridBase", "ggrepel", "calibrate", "ggplotify")) 
+#library(easypackages)
+library(lubripack)
 
-	libraries(c("RColorBrewer", "ggpubr", "harmony", "SingleCellExperiment", "SummarizedExperiment", "easypackages", "SCA"))
+ 
+	lubripack(c("Seurat", "DoubletFinder", "Matrix", "stringr", "useful", "ggplot2", "gridExtra", "grid", "gtable", "data.table", "cowplot", "plyr", "reshape2", "tidyr", "pheatmap", "RColorBrewer", "tidyverse", "colorspace", "splines", "AnnotationDbi", "dplyr", "gridBase", "ggrepel", "calibrate", "ggplotify")) 
+
+	lubripack(c("RColorBrewer", "ggpubr", "harmony", "SingleCellExperiment", "SummarizedExperiment", "easypackages", "SCA"))
 
 	
   

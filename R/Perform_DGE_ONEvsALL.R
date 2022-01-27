@@ -34,7 +34,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
                                  ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot, Species="hsa", 
                                  FDR = 0.1, FCcutoff = 1.5, topnumber = 5, min.pctagecells = 0.25, test.use = "wilcox", only.pos.Genes = TRUE, latent.vars = NULL, min.diff.pct = -Inf, downsampleHeatmap = 300, plots = TRUE, save = TRUE, ComputeDGEs="YES"){
   
-  #Temp.object <- SCdata
+  #Temp.object <- SCdata.Temp
   #saveDIR <- pkWD
   
   DgeNameInpdf <- paste0(MainCol,"_Based_",SuffixName,"_",test.use,"_min.pct_",min.pctagecells); DgeNameInpdf
@@ -64,6 +64,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
     if(ComputeDGEs=="YES"){
     markers <- FindAllMarkers(Temp.object, min.pct = min.pctagecells, logfc.threshold = log2(FCcutoff), assay = "RNA", test.use = test.use, latent.vars = latent.vars, min.diff.pct = min.diff.pct, only.pos = only.pos.Genes)
     markers <- markers[markers$p_val_adj < FDR,]; dim(markers)
+    print(head(markers)); print(dim(markers))
     
     if(Species=="hsa"){
       print("Removing MT and Ribosomal genes of Human")
@@ -72,6 +73,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       print("Removing MT and Ribosomal genes of Mouse")
     markers <- Remove_Genes_Rp_mt_Rna_Mouse(markers)
     }
+    
     } else{
 
     print(paste0("DGEs step already completed, reading marker info from the directory"))
@@ -221,9 +223,9 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
       print(DotPlot(Temp.object, features = (topFDR$gene), cols= c("gray80", "red"))  + 
               theme(axis.title.x=element_blank(), axis.title.y = element_blank(), axis.text=element_text(size=13), legend.text=element_text(size=13), legend.title=element_text(size=15),
                     legend.key.size = unit(0.4, "cm")) + RotatedAxis() + scale_colour_viridis_c(option = "plasma") + ggtitle(paste0(MainCol)))
-      print(DotPlot(Temp.object, features = sort(topFDR$gene), cols= c("gray80", "red"))  + 
-              theme(axis.title.x=element_blank(), axis.title.y = element_blank(), axis.text=element_text(size=13), legend.text=element_text(size=13), legend.title=element_text(size=15),
-                    legend.key.size = unit(0.4, "cm")) + RotatedAxis() + scale_colour_viridis_c(option = "plasma") + ggtitle(paste0(MainCol)))
+      #print(DotPlot(Temp.object, features = sort(topFDR$gene), cols= c("gray80", "red"))  + 
+      #        theme(axis.title.x=element_blank(), axis.title.y = element_blank(), axis.text=element_text(size=13), legend.text=element_text(size=13), legend.title=element_text(size=15),
+      #              legend.key.size = unit(0.4, "cm")) + RotatedAxis() + scale_colour_viridis_c(option = "plasma") + ggtitle(paste0(MainCol)))
       print(pheatmap(nor.exp[topFDR$gene,],annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
                      annotation_colors = ann_colors, cluster_rows = FALSE, cluster_cols = FALSE, main = paste0("Heatmap All markers, Max cells plotted per main category:",downsampleHeatmap), fontsize = 13))
       print(pheatmap(nor.exp[top$gene,],annotation_col=meta.data.plot,show_colnames=F,show_rownames=T,  color=my_palette, breaks=colors, 
