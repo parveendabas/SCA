@@ -17,7 +17,7 @@ library(lubripack)
  
 	lubripack(c("Seurat", "DoubletFinder", "Matrix", "stringr", "useful", "ggplot2", "gridExtra", "grid", "gtable", "data.table", "cowplot", "plyr", "reshape2", "tidyr", "pheatmap", "RColorBrewer", "tidyverse", "colorspace", "splines", "AnnotationDbi", "dplyr", "gridBase", "ggrepel", "calibrate", "ggplotify")) 
 
-	lubripack(c("RColorBrewer", "ggpubr", "harmony", "SingleCellExperiment", "SummarizedExperiment", "easypackages", "SCA"))
+	lubripack(c("RColorBrewer", "ggpubr", "harmony", "SingleCellExperiment", "SummarizedExperiment", "SCA"))
 
 	
   
