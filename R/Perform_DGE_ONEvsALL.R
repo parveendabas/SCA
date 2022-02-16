@@ -100,7 +100,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
                                                          legend.text = element_text(size = 13), legend.title = element_text(size = 15), 
                                                          legend.key.size = unit(0.4, "cm")) + RotatedAxis() + 
                 scale_colour_viridis_c(option = "plasma") + ggtitle(paste0(MainCol))
-        p2 <- VlnPlot(SeuratObj.CT.Strain, features = markers$gene, pt.size = 0)  + geom_boxplot(width=0.1, outlier.shape=NA)
+        p2 <- VlnPlot(Temp.object, features = markers$gene, pt.size = 0)  + geom_boxplot(width=0.1, outlier.shape=NA)
         
         print(plot_grid(p1, p2, NULL, nrow = 2))
         
@@ -241,6 +241,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
     }
   }
   
+  return(markers)
   
   print("Done")
   print(Sys.time())
