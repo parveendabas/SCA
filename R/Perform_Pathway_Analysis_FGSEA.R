@@ -12,6 +12,7 @@
 #' @param minSizeGeneSet minimum Size of GeneSet for filtering
 #' @param DownsamplePerIdent Number of cells to use per Idents
 #' @param GroupName Column to use for Identity
+#' @param FDRcutoff FDRcutoff
 #' @param topnumber Max #pathways to be plotted per group
 #' @param PDFheight PDFheight
 #' @param PDFwidth PDFwidth
@@ -23,13 +24,20 @@
 
 
 Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pathway_FGSEA", msigdbrCategoryList="H", SubmsigdbrCategorySubset = "", 
-				DownsamplePerIdent="ALL", GroupName="Cluster",
+				DownsamplePerIdent="ALL", GroupName="Cluster", FDRcutoff=0.1,
                                  minSizeGeneSet=5, topnumber=10, PDFheight=10, PDFwidth=12){
   
-  #Temp.object=SeuratObj
+  #Temp.object=SCdata.temp
+  #saveDIR=plotWD.subset
+  #SuffixName="Beta_Both_LF_and_HF"
   #msigdbrCategoryList="H"
-  #SubmsigdbrCategorySubset = ""
-  #minSizeGeneSet=5
+  #SubmsigdbrCategorySubset=""
+  
+  #DownsamplePerIdent="ALL"
+  #GroupName=IdentGroup
+  #FDRcutoff=0.1
+  
+  #minSizeGeneSet=3
   #topnumber=10
   #PDFheight=10
   #PDFwidth=12
@@ -64,7 +72,7 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
   print(paste0("Top Genes to plot:",topnumber))
         
         for(CategoryUse in c(msigdbrCategoryList)){
-          #CategoryUse="C2"
+          #CategoryUse="H"
           print(paste0("Processing category: ",CategoryUse))
           
           print(paste0("Check Point:  ----------->>>>>>>>>>>>>> MAIN Cat"))
@@ -154,7 +162,7 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
               
               Genes<-Groups.genes %>%
                 dplyr::filter(group == Groups[[i]]) %>%
-                arrange(desc(auc)) %>% 
+                arrange(dplyr::desc(auc)) %>% 
                 dplyr::select(feature, auc)
               
               ranks<- deframe(Genes)
@@ -165,34 +173,44 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
               
               fgseaResTidy <- fgseaRes %>%
                 as_tibble() %>%
-                arrange(desc(NES))
+                arrange(dplyr::desc(NES))
+		
+
               fgseaResTidy %>% 
                 dplyr::select(-leadingEdge, -ES, -log2err) %>% 
                 arrange(padj) %>% 
                 head()
+
+
               fgseaResTidy$Enrichment = ifelse(fgseaResTidy$NES > 0, "Up-regulated", "Down-regulated")
-              Filtidy<-fgseaResTidy %>% filter(padj < 0.05) 
-              filtRes = rbind(Filtidy %>% filter(Enrichment == "Up-regulated") %>% head(n= 20),
-                              Filtidy %>% filter(Enrichment == "Down-regulated") %>% head(n= 20))
+              Filtidy<-fgseaResTidy %>% filter(padj < FDRcutoff) 
+	      fgseaResTidy$cluster <- X
+	       
+	      print(paste0("Pathways passed at FDR cutoff of ",FDRcutoff," are: ",dim(Filtidy)))
+
+              #filtRes = rbind(Filtidy %>% filter(Enrichment == "Up-regulated") %>% head(n=250),
+              #                Filtidy %>% filter(Enrichment == "Down-regulated") %>% head(n=250))
+
               Y<-fgseaResTidy
               hmc=as.data.frame(Y)
               hmc=apply(Y,2,as.character) 
               #write.csv(hmc,paste(name, X,".csv"))
               names(Y)[names(Y)=="NES"]=paste(X)
               Annot.pathway<-Y[,c("pathway",paste(X))]
+              print(head(Annot.pathway,1))
               
               if(i == 1){
                 print(paste0("Processing Entry First:",i))
                 Annot.pathway.Merge=Annot.pathway
+                Combined.df <- fgseaResTidy; print(tail(Combined.df)); print(dim(Combined.df))
               } else {
                 print(paste0("Processing Entry :",i))
                 Annot.pathway.Merge<-merge(Annot.pathway, Annot.pathway.Merge, by.x="pathway", by.y="pathway")
+                Combined.df <- rbind(Combined.df,fgseaResTidy); print(tail(Combined.df)); print(dim(Combined.df))
               }
               print(head(Annot.pathway.Merge,1))
               
             }
-            
-            print(paste0("Check Point: ----------->>>>>>>>>>>>>> 1"))
             
             Annot.pathway2 <- Annot.pathway.Merge
             
@@ -219,8 +237,6 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
             Annot.pathway4[is.na(Annot.pathway4)]=0
             redblackblu=CustomPalette(low = "blue", high = "red", mid = "white", k = 1000)
             
-            print(paste0("Check Point:  ----------->>>>>>>>>>>>>> 3"))
-            
             setwd(PathwaydirMain)
             pdf(paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,"_top_",topnumber,".pdf"),height=PDFheight, width=PDFwidth)
             #pheatmap(Annot.pathway4,scale = "none",cluster_rows = T,cluster_cols = F,border_color = "black",treeheight_row = 0,legend_breaks = c(-5,-2,0,2,5),
@@ -237,20 +253,17 @@ Perform_Pathway_Analysis_FGSEA <- function(Temp.object, saveDIR, SuffixName="Pat
             
             dev.off()
             
-            print(paste0("Check Point: ----------->>>>>>>>>>>>>>  4"))
-            saveRDS(Annot.pathway2, file=paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,".rds"))
+            saveRDS(Annot.pathway2, file=paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,"_NES.rds"))
+            saveRDS(Combined.df, file=paste0(SuffixName,"_",GroupName,"_Based_Pathway_ALLcells_Category_",name,"_cells",DownsamplePerIdent,".rds"))
           
-            print(paste0("Check Point: ----------->>>>>>>>>>>>>>  5"))
             
             #SubCategoryUse
           }
           
-          print(paste0("Check Point:  ----------->>>>>>>>>>>>>> 6"))
           
           #CategoryUse
         }
         
-        print(paste0("Check Point:  ----------->>>>>>>>>>>>>> 7"))
         
         #Function
 }

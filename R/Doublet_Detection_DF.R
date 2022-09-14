@@ -42,7 +42,12 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   setwd(saveDIR)
   DDdir <- paste(getwd(),paste0("Doublet_Detection_",Sample),sep="/"); print(DDdir)
   dir.create(file.path(getwd(),paste0("Doublet_Detection_",Sample)), showWarnings = FALSE)
+ 
+  print("**** STEP1")
   
+  print(paste0("ClusOrder is:"))
+  print(paste0(ClusOrder))
+ 
   print("Creating Seurat Object")
   print(paste0("min.cells:",mincells, ", min.features:",mingenes))
   data <- Read10X(data.dir = matrix.DIR)
@@ -64,7 +69,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     SeuratObject[["percent.rb"]] <- PercentageFeatureSet(SeuratObject, pattern = "^Rp[sl]")
   }
   
-  
+  print("**** STEP2")
   
   print("Filtering Data based on specified filters")
   Min.Cells.Genes.Filter <- SequencedCells-nrow(SeuratObject@meta.data)
@@ -97,6 +102,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   #ggtexttable(cutoff.df, theme = ttheme("minimal"))
   #ggtexttable(cutoff.df, theme = ttheme("classic"))
   
+  print("**** STEP3")
   
   SeuratObject <- NormalizeData(SeuratObject) %>%
     FindVariableFeatures(nfeatures = FeatureNum, verbose = FALSE) %>%
@@ -125,6 +131,8 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   
   dev.off()
   
+  print("**** STEP4")
+  
   print(paste0("PrePorocessing data before running Doublet Detection Algorithms for: ",Sample))
   RUNProcessData="YES"
   if(RUNProcessData == "YES"){
@@ -141,6 +149,8 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     
   }
   
+  
+  print("**** STEP5")
   
   if (DoubletFinder == TRUE) {
     
@@ -163,6 +173,8 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     nExp_poi.adj <- round(nExp_poi*(1-homotypic.prop)); nExp_poi.adj
     dev.off()
     print("Finished Doublet Finder steps")
+    
+    print("**** STEP6.1")
     
     ## Run DoubletFinder with varying classification stringencies ----------------------------------------------------------------
     SeuratObject <- doubletFinder_v3(SeuratObject, PCs = 1:PCAnum, pN = 0.25, pK = 0.09, nExp = nExp_poi, reuse.pANN = FALSE, sct = FALSE)
@@ -187,7 +199,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     #SeuratObject@meta.data[SeuratObject@meta.data$Doublet_HighConf == "Doublet", "DoubletFinder"] <- "Doublet_HighConf"
     print(table(SeuratObject@meta.data$DoubletFinder))
     
-    SeuratObject@meta.data$seurat_clusters <- MakeClustersFrom1(SeuratObject@meta.data$seurat_clusters)
+    SeuratObject@meta.data$seurat_clusters <- MakeClustersFrom1(SeuratObject@meta.data$seurat_clusters, ClusOrder)
     
     #head(SeuratObject@meta.data)
     #cutoff.df <- data.frame(Doublets = table(SeuratObject@meta.data$DoubletFinder)); print(cutoff.df)
@@ -196,30 +208,47 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     #titleDF <- paste0(Sample,": Doublets Detected")
     #func.PlotTable.General(TableDF, FontsDF, titleDF, 20)
     
+    print("**** STEP6.2")
+    
     cutoff.df.doub <- data.frame(cutoff.df, Doublets=nrow(DoubletCells))
     cutoff.df.doub <- rbind(cutoff.df, Doublets=c(nrow(DoubletCells), round((nrow(DoubletCells)/BeforeFilter*100),1)))
     cutoff.df.doub["QCpassCells","Cells"] = nrow(SingletCells)
     cutoff.df.doub["QCpassCells","Percentage"] = round((nrow(SingletCells)/BeforeFilter*100),1)
     cutoff.df.doub <- cutoff.df.doub[c(1,4,2,3,5),]
     
+    print("**** STEP6.2.1")
     d1 <- DimPlot(SeuratObject, group.by = "DoubletFinder", cols = c("purple", "cyan3"), label = F, label.size = 7, pt.size = 0.1)
+    print("**** STEP6.2.2")
     d2 <- VlnPlot(SeuratObject, features = "nFeature_RNA", pt.size = 0.1, group.by = "seurat_clusters", cols = c("purple", "cyan3"), split.by = "DoubletFinder") + ggtitle(paste0("nFeature_RNA, Doublets = ",nrow(DoubletCells),", (",round((nrow(DoubletCells)/BeforeFilter*100),1),"%)"))
-    d3 <- DimPlot(SeuratObject, group.by = "seurat_clusters", cols = ClusPallette, label = T, label.size = 7, pt.size = 0.1)
+    print("**** STEP6.2.3")
+    #Idents(SeuratObject) <- "seurat_clusters"
+    print(table(SeuratObject$seurat_clusters))
+    #d3 <- DimPlot(SeuratObject, cols = ClusPallette, label = T, label.size = 7, pt.size = 0.1)
+    print("**** STEP6.2.4")
     d4 <- FeaturePlot(SeuratObject, features = "percent.mt", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)
+    print("**** STEP6.2.5")
     d5 <- FeaturePlot(SeuratObject, features = "percent.rb", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)
+    print("**** STEP6.2.6")
     d6 <- FeaturePlot(SeuratObject, features = "nCount_RNA", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1)
+    print("**** STEP6.2.7")
     d7 <- FeaturePlot(SeuratObject, features = "nFeature_RNA") + scale_colour_viridis_c(option = "plasma", direction = -1)
+    print("**** STEP6.2.8")
     d8 <- FeaturePlot(SeuratObject, features = "pANNcomputed", pt.size = 0.1) + scale_colour_viridis_c(option = "plasma", direction = -1) + ggtitle(paste0("DoubletFinder Score"))
+    print("**** STEP6.2.9")
     d9 <- ggtexttable(cutoff.df.doub,theme = ttheme("mViolet"))
-    
+    print("**** STEP6.2.10")
+    print("**** STEP6.3")
     
     setwd(DoubletFinderDir)
     pdf(file=paste0("Plots_DoubletFinder_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".pdf"),height = 10,width = 12)
     m1 <- plot_grid(d9, d2, nrow=1, rel_widths = c(1,2))
-    m2 <- plot_grid(d1,d3,d4, nrow=1)
+    #m2 <- plot_grid(d1,d3,d4, nrow=1)
+    m2 <- plot_grid(d1,NULL,d4, nrow=1)
     m3 <- plot_grid(d5, d6,d7,d8, nrow=1)
     print(plot_grid(m1, m2, m3, nrow = 3))
     dev.off()
+    
+    print("**** STEP6.4")
     
     print("Plotted Doublet Information")
     
@@ -231,6 +260,8 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
     write.table(DoubletCells,file=paste0("Doublets_DoubletFinder_Calls_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
     write.table(SingletCells,file=paste0("Singlets_DoubletFinder_Calls_",Sample,"_using_PCA_",PCAnum,"_res_",resClus,".txt"),quote=F,sep="\t")
     
+    print("**** STEP6.5")
+    
   }
   
   SeuratObject@meta.data$SequencedCells <- BeforeFilter
@@ -238,6 +269,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   SeuratObject@meta.data$PassPercent <- round(nrow(SingletCells)/BeforeFilter*100,1)
   head(SeuratObject@meta.data)
   
+  print("**** STEP7")
   
   setwd(saveDIR)
   saveRDS(SeuratObject, file = paste0(Sample,"_After_Doublets_using_PCA_",PCAnum,"_res_",resClus,".rds"))
@@ -247,6 +279,7 @@ Doublet_Detection_DF <- function(matrix.DIR, saveDIR, Sample, Species="hsa", Fea
   print("Done")
   print(Sys.time())
 }
+
 
 
 

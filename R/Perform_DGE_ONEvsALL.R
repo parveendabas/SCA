@@ -34,8 +34,30 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
                                  ColNamesToPlot=ColNamesToPlot, ColPaletteToPlot=ColPaletteToPlot, Species="hsa", 
                                  FDR = 0.1, FCcutoff = 1.5, topnumber = 5, min.pctagecells = 0.25, test.use = "wilcox", only.pos.Genes = TRUE, latent.vars = NULL, min.diff.pct = -Inf, downsampleHeatmap = 300, plots = TRUE, save = TRUE, ComputeDGEs="YES"){
   
-  #Temp.object <- SCdata.Temp
+  #Temp.object <- SCdata.ALL.sub
   #saveDIR <- pkWD
+  #SuffixName="ALLcells"
+  
+  #MainCol="Cluster"
+  #MainColOrder=levels(SCdata.ALL.sub$Cluster)
+  #MainColPallete=ClusPallette
+  
+  #ColNamesToPlot=ColNamesToPlot
+  #ColPaletteToPlot=ColPaletteToPlot
+  #Species="hsa"
+  
+  #FDR=0.1
+  #FCcutoff=1.5
+  #topnumber=5
+  #min.pctagecells=0.25
+  #test.use="wilcox"
+  #only.pos.Genes=TRUE
+  #latent.vars=NULL
+  #min.diff.pct=-Inf
+  #downsampleHeatmap=300
+  #plots=TRUE
+  #save=TRUE
+  #ComputeDGEs="YES"
   
   DgeNameInpdf <- paste0(MainCol,"_Based_",SuffixName,"_",test.use,"_min.pct_",min.pctagecells); DgeNameInpdf
   
@@ -83,7 +105,7 @@ Perform_DGE_ONEvsALL <- function(Temp.object, saveDIR, SuffixName="ALLcells",
 
     }
     
-    head(markers, n = 15); print(dim(markers))
+    print(head(markers, n = 15)); print(dim(markers))
     
     if (nrow(markers) == 0) {
       
